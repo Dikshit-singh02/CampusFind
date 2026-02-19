@@ -7,13 +7,16 @@ const getLostItems = async (req, res) => {
     const lostItems = await LostItem.find().populate('userId', 'name email');
     res.json(lostItems);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching lost items:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
   }
 };
 
 const createLostItem = async (req, res) => {
   try {
     const { title, description, image, location } = req.body;
+    console.log('Creating lost item with data:', { title, description, image, location });
+    
     const lostItem = new LostItem({
       title,
       description,
@@ -21,10 +24,13 @@ const createLostItem = async (req, res) => {
       location,
       userId: req.user ? req.user.id : null,
     });
-    await lostItem.save();
-    res.status(201).json(lostItem);
+    
+    const savedItem = await lostItem.save();
+    console.log('Lost item saved successfully:', savedItem);
+    res.status(201).json(savedItem);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error creating lost item:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
   }
 };
 

@@ -18,6 +18,7 @@ const LostFoundPage = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     fetchItems();
@@ -35,7 +36,7 @@ const LostFoundPage = () => {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching items:', err);
-      setError('Failed to load items');
+      setError('Failed to load items: ' + err.message);
       setLoading(false);
     }
   };
@@ -56,27 +57,43 @@ const LostFoundPage = () => {
 
   const handleLostSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccessMessage('');
+    
+    console.log('=== Submitting Lost Item ===');
+    console.log('Form data:', lostFormData);
+    
     try {
-      await createLostItem(lostFormData);
+      const response = await createLostItem(lostFormData);
+      console.log('Success! Response:', response);
+      setSuccessMessage('Lost item reported successfully!');
       setLostFormData({ title: '', description: '', image: '', location: '' });
       fetchItems();
-      alert('Lost item reported successfully!');
     } catch (err) {
       console.error('Error creating lost item:', err);
-      alert('Failed to report lost item');
+      console.error('Error details:', err.response?.data || err.message);
+      setError('Failed to report lost item: ' + (err.response?.data?.message || err.message));
     }
   };
 
   const handleFoundSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccessMessage('');
+    
+    console.log('=== Submitting Found Item ===');
+    console.log('Form data:', foundFormData);
+    
     try {
-      await createFoundItem(foundFormData);
+      const response = await createFoundItem(foundFormData);
+      console.log('Success! Response:', response);
+      setSuccessMessage('Found item reported successfully!');
       setFoundFormData({ title: '', description: '', image: '', location: '' });
       fetchItems();
-      alert('Found item reported successfully!');
     } catch (err) {
       console.error('Error creating found item:', err);
-      alert('Failed to report found item');
+      console.error('Error details:', err.response?.data || err.message);
+      setError('Failed to report found item: ' + (err.response?.data?.message || err.message));
     }
   };
 
@@ -84,7 +101,23 @@ const LostFoundPage = () => {
     <div className="container mt-5">
       <h2 className="text-center mb-4">Lost & Found</h2>
       
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && (
+        <div className="alert alert-danger alert-dismissible">
+          {error}
+          <button type="button" className="close" onClick={() => setError('')}>
+            <span>&times;</span>
+          </button>
+        </div>
+      )}
+      
+      {successMessage && (
+        <div className="alert alert-success alert-dismissible">
+          {successMessage}
+          <button type="button" className="close" onClick={() => setSuccessMessage('')}>
+            <span>&times;</span>
+          </button>
+        </div>
+      )}
       
       {loading ? (
         <div className="text-center">
@@ -103,7 +136,7 @@ const LostFoundPage = () => {
               <div className="card-body">
                 <form onSubmit={handleLostSubmit}>
                   <div className="form-group">
-                    <label>Title</label>
+                    <label>Title *</label>
                     <input
                       type="text"
                       className="form-control"
@@ -115,7 +148,7 @@ const LostFoundPage = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Description</label>
+                    <label>Description *</label>
                     <textarea
                       className="form-control"
                       name="description"
@@ -127,7 +160,7 @@ const LostFoundPage = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Location</label>
+                    <label>Location *</label>
                     <input
                       type="text"
                       className="form-control"
@@ -166,7 +199,7 @@ const LostFoundPage = () => {
               <div className="card-body">
                 <form onSubmit={handleFoundSubmit}>
                   <div className="form-group">
-                    <label>Title</label>
+                    <label>Title *</label>
                     <input
                       type="text"
                       className="form-control"
@@ -178,7 +211,7 @@ const LostFoundPage = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Description</label>
+                    <label>Description *</label>
                     <textarea
                       className="form-control"
                       name="description"
@@ -190,7 +223,7 @@ const LostFoundPage = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Location</label>
+                    <label>Location *</label>
                     <input
                       type="text"
                       className="form-control"
