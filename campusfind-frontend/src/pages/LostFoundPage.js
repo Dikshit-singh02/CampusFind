@@ -55,6 +55,20 @@ const LostFoundPage = () => {
     });
   };
 
+  const handleImageChange = (e, setFormData, formData) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({
+          ...formData,
+          image: reader.result
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleLostSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -172,14 +186,13 @@ const LostFoundPage = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Image URL (optional)</label>
+                    <label>Image (optional)</label>
                     <input
-                      type="text"
+                      type="file"
                       className="form-control"
                       name="image"
-                      value={lostFormData.image}
-                      onChange={handleLostChange}
-                      placeholder="Enter image URL"
+                      accept="image/*"
+                      onChange={(e) => handleImageChange(e, setLostFormData, lostFormData)}
                     />
                   </div>
                   <button type="submit" className="btn btn-primary btn-block">
