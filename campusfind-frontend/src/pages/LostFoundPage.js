@@ -248,14 +248,13 @@ const LostFoundPage = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Image URL (optional)</label>
+                    <label>Image (optional)</label>
                     <input
-                      type="text"
+                      type="file"
                       className="form-control"
                       name="image"
-                      value={foundFormData.image}
-                      onChange={handleFoundChange}
-                      placeholder="Enter image URL"
+                      accept="image/*"
+                      onChange={(e) => handleImageChange(e, setFoundFormData, foundFormData)}
                     />
                   </div>
                   <button type="submit" className="btn btn-success btn-block">
