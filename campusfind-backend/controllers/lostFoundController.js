@@ -19,7 +19,7 @@ const createLostItem = async (req, res) => {
       description,
       image,
       location,
-      userId: req.user.id,
+      userId: req.user ? req.user.id : null,
     });
     await lostItem.save();
     res.status(201).json(lostItem);
@@ -46,7 +46,7 @@ const createFoundItem = async (req, res) => {
       description,
       image,
       location,
-      userId: req.user.id,
+      userId: req.user ? req.user.id : null,
     });
     await foundItem.save();
     res.status(201).json(foundItem);
