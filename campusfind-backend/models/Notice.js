@@ -12,7 +12,23 @@ const noticeSchema = new mongoose.Schema({
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+  },
+  // New fields for notification system
+  status: {
+    type: String,
+    enum: ['Lost', 'Found', 'General', 'Academic', 'Event', 'Emergency'],
+    default: 'General',
+  },
+  itemDetails: {
+    description: String,
+    location: String,
+    image: String,
+    contactInfo: String,
+  },
+  type: {
+    type: String,
+    enum: ['notice', 'notification'],
+    default: 'notice',
   },
 }, {
   timestamps: true,

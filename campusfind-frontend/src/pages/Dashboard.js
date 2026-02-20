@@ -5,7 +5,7 @@ const Dashboard = () => {
   const modules = [
     { name: 'Map', path: '/map', icon: '🗺️' },
     { name: 'Lost & Found', path: '/lostfound', icon: '🔍' },
-    { name: 'Notices', path: '/notices', icon: '📢' },
+    { name: 'Notices & Notifications', path: '/notices', icon: '📢' },
     { name: 'QR Scanner', path: '/qr', icon: '📱' },
     { name: 'SOS', path: '/sos', icon: '🚨' },
     { name: 'Admin Panel', path: '/admin', icon: '⚙️' }

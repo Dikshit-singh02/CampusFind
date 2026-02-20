@@ -30,4 +30,20 @@ export const createFoundItem = async (data) => {
   return api.post('/lostfound/found', data);
 };
 
+// Notifications API
+export const getNotifications = async (type, status) => {
+  let queryString = '';
+  if (type || (status && status !== 'All')) {
+    const params = [];
+    if (type) params.push(`type=${encodeURIComponent(type)}`);
+    if (status && status !== 'All') params.push(`status=${encodeURIComponent(status)}`);
+    queryString = '?' + params.join('&');
+  }
+  return api.get(`/notifications${queryString}`);
+};
+
+export const createNotification = async (data) => {
+  return api.post('/notifications', data);
+};
+
 export default api;

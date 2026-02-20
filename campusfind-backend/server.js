@@ -14,6 +14,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/lostfound', require('./routes/lostfound'));
 app.use('/api/notices', require('./routes/notices'));
+app.use('/api/notifications', require('./routes/notices'));
 app.use('/api/sos', require('./routes/sos'));
 app.use('/api/buildings', require('./routes/buildings'));
 app.use('/api/rooms', require('./routes/rooms'));

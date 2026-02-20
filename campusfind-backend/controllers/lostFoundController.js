@@ -1,5 +1,6 @@
 const LostItem = require('../models/LostItem');
 const FoundItem = require('../models/FoundItem');
+const { createLostItemNotification, createFoundItemNotification } = require('./noticeController');
 
 // Lost Items
 const getLostItems = async (req, res) => {
@@ -27,6 +28,15 @@ const createLostItem = async (req, res) => {
     
     const savedItem = await lostItem.save();
     console.log('Lost item saved successfully:', savedItem);
+    
+    // Create notification automatically
+    try {
+      await createLostItemNotification(savedItem);
+    } catch (notifError) {
+      console.error('Error creating notification for lost item:', notifError);
+      // Continue even if notification creation fails
+    }
+    
     res.status(201).json(savedItem);
   } catch (error) {
     console.error('Error creating lost item:', error);
@@ -54,8 +64,18 @@ const createFoundItem = async (req, res) => {
       location,
       userId: req.user ? req.user.id : null,
     });
-    await foundItem.save();
-    res.status(201).json(foundItem);
+    
+    const savedItem = await foundItem.save();
+    
+    // Create notification automatically
+    try {
+      await createFoundItemNotification(savedItem);
+    } catch (notifError) {
+      console.error('Error creating notification for found item:', notifError);
+      // Continue even if notification creation fails
+    }
+    
+    res.status(201).json(savedItem);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
