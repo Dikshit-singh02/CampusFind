@@ -8,13 +8,15 @@ const LostFoundPage = () => {
     title: '',
     description: '',
     image: '',
-    location: ''
+    location: '',
+    contactInfo: ''
   });
   const [foundFormData, setFoundFormData] = useState({
     title: '',
     description: '',
     image: '',
-    location: ''
+    location: '',
+    contactInfo: ''
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -81,7 +83,7 @@ const LostFoundPage = () => {
       const response = await createLostItem(lostFormData);
       console.log('Success! Response:', response);
       setSuccessMessage('Lost item reported successfully!');
-      setLostFormData({ title: '', description: '', image: '', location: '' });
+      setLostFormData({ title: '', description: '', image: '', location: '', contactInfo: '' });
       fetchItems();
     } catch (err) {
       console.error('Error creating lost item:', err);
@@ -102,13 +104,33 @@ const LostFoundPage = () => {
       const response = await createFoundItem(foundFormData);
       console.log('Success! Response:', response);
       setSuccessMessage('Found item reported successfully!');
-      setFoundFormData({ title: '', description: '', image: '', location: '' });
+      setFoundFormData({ title: '', description: '', image: '', location: '', contactInfo: '' });
       fetchItems();
     } catch (err) {
       console.error('Error creating found item:', err);
       console.error('Error details:', err.response?.data || err.message);
       setError('Failed to report found item: ' + (err.response?.data?.message || err.message));
     }
+  };
+
+  // Get status badge color
+  const getStatusBadgeColor = (status) => {
+    switch (status) {
+      case 'Available':
+        return 'bg-success';
+      case 'Claimed':
+        return 'bg-warning';
+      case 'Returned':
+        return 'bg-info';
+      default:
+        return 'bg-secondary';
+    }
+  };
+
+  // Copy QR code to clipboard
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    alert('QR Code copied to clipboard!');
   };
 
   return (
@@ -186,6 +208,17 @@ const LostFoundPage = () => {
                     />
                   </div>
                   <div className="form-group">
+                    <label>Contact Info</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="contactInfo"
+                      value={lostFormData.contactInfo}
+                      onChange={handleLostChange}
+                      placeholder="Phone number or email"
+                    />
+                  </div>
+                  <div className="form-group">
                     <label>Image (optional)</label>
                     <input
                       type="file"
@@ -248,6 +281,17 @@ const LostFoundPage = () => {
                     />
                   </div>
                   <div className="form-group">
+                    <label>Contact Info</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="contactInfo"
+                      value={foundFormData.contactInfo}
+                      onChange={handleFoundChange}
+                      placeholder="Phone number or email"
+                    />
+                  </div>
+                  <div className="form-group">
                     <label>Image (optional)</label>
                     <input
                       type="file"
@@ -271,20 +315,42 @@ const LostFoundPage = () => {
       <div className="row mt-4">
         <div className="col-md-6">
           <div className="card">
-            <div className="card-header bg-danger text-white">
+            <div className="card-header bg-danger text-white d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Lost Items ({lostItems.length})</h5>
             </div>
-            <div className="card-body" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <div className="card-body" style={{ maxHeight: '500px', overflowY: 'auto' }}>
               {lostItems.length === 0 ? (
                 <p className="text-muted text-center">No lost items reported yet.</p>
               ) : (
                 <ul className="list-group">
                   {lostItems.map((item) => (
                     <li key={item._id} className="list-group-item">
-                      <h6>{item.title}</h6>
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                          <h6 className="mb-1">{item.title}</h6>
+                          <span className={`badge ${getStatusBadgeColor(item.status)}`}>
+                            {item.status || 'Available'}
+                          </span>
+                        </div>
+                        {item.qrCode && (
+                          <button 
+                            className="btn btn-sm btn-outline-secondary"
+                            onClick={() => copyToClipboard(item.qrCode)}
+                            title="Copy QR Code"
+                          >
+                            📋 QR
+                          </button>
+                        )}
+                      </div>
                       <p className="mb-1">{item.description}</p>
                       <small className="text-muted">
                         <strong>Location:</strong> {item.location}<br />
+                        {item.contactInfo && (
+                          <span><strong>Contact:</strong> {item.contactInfo}<br /></span>
+                        )}
+                        {item.qrCode && (
+                          <span><strong>QR Code:</strong> {item.qrCode}<br /></span>
+                        )}
                         {item.createdAt && (
                           <span>Reported on: {new Date(item.createdAt).toLocaleDateString()}</span>
                         )}
@@ -310,20 +376,42 @@ const LostFoundPage = () => {
         {/* Found Items List */}
         <div className="col-md-6">
           <div className="card">
-            <div className="card-header bg-info text-white">
+            <div className="card-header bg-info text-white d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Found Items ({foundItems.length})</h5>
             </div>
-            <div className="card-body" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <div className="card-body" style={{ maxHeight: '500px', overflowY: 'auto' }}>
               {foundItems.length === 0 ? (
                 <p className="text-muted text-center">No found items reported yet.</p>
               ) : (
                 <ul className="list-group">
                   {foundItems.map((item) => (
                     <li key={item._id} className="list-group-item">
-                      <h6>{item.title}</h6>
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                          <h6 className="mb-1">{item.title}</h6>
+                          <span className={`badge ${getStatusBadgeColor(item.claimStatus || item.status)}`}>
+                            {item.claimStatus || item.status || 'Available'}
+                          </span>
+                        </div>
+                        {item.qrCode && (
+                          <button 
+                            className="btn btn-sm btn-outline-secondary"
+                            onClick={() => copyToClipboard(item.qrCode)}
+                            title="Copy QR Code"
+                          >
+                            📋 QR
+                          </button>
+                        )}
+                      </div>
                       <p className="mb-1">{item.description}</p>
                       <small className="text-muted">
                         <strong>Location:</strong> {item.location}<br />
+                        {item.contactInfo && (
+                          <span><strong>Contact:</strong> {item.contactInfo}<br /></span>
+                        )}
+                        {item.qrCode && (
+                          <span><strong>QR Code:</strong> {item.qrCode}<br /></span>
+                        )}
                         {item.createdAt && (
                           <span>Reported on: {new Date(item.createdAt).toLocaleDateString()}</span>
                         )}

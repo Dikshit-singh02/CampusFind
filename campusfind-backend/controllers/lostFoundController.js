@@ -15,7 +15,7 @@ const getLostItems = async (req, res) => {
 
 const createLostItem = async (req, res) => {
   try {
-    const { title, description, image, location } = req.body;
+    const { title, description, image, location, contactInfo } = req.body;
     console.log('Creating lost item with data:', { title, description, image, location });
     
     const lostItem = new LostItem({
@@ -23,18 +23,20 @@ const createLostItem = async (req, res) => {
       description,
       image,
       location,
+      contactInfo,
       userId: req.user ? req.user.id : null,
+      qrCode: `LOST-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      status: 'Available',
     });
     
     const savedItem = await lostItem.save();
     console.log('Lost item saved successfully:', savedItem);
     
-    // Create notification automatically
+    // Create notification for the lost item
     try {
       await createLostItemNotification(savedItem);
     } catch (notifError) {
-      console.error('Error creating notification for lost item:', notifError);
-      // Continue even if notification creation fails
+      console.error('Error creating notification:', notifError);
     }
     
     res.status(201).json(savedItem);
@@ -56,23 +58,27 @@ const getFoundItems = async (req, res) => {
 
 const createFoundItem = async (req, res) => {
   try {
-    const { title, description, image, location } = req.body;
+    const { title, description, image, location, contactInfo } = req.body;
+    
     const foundItem = new FoundItem({
       title,
       description,
       image,
       location,
+      contactInfo,
       userId: req.user ? req.user.id : null,
+      status: 'found',
+      qrCode: `FOUND-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      claimStatus: 'Available',
     });
     
     const savedItem = await foundItem.save();
     
-    // Create notification automatically
+    // Create notification for the found item
     try {
       await createFoundItemNotification(savedItem);
     } catch (notifError) {
-      console.error('Error creating notification for found item:', notifError);
-      // Continue even if notification creation fails
+      console.error('Error creating notification:', notifError);
     }
     
     res.status(201).json(savedItem);
@@ -81,4 +87,87 @@ const createFoundItem = async (req, res) => {
   }
 };
 
-module.exports = { getLostItems, createLostItem, getFoundItems, createFoundItem };
+// Get item by QR code
+const getItemByQRCode = async (req, res) => {
+  try {
+    const { qrCode } = req.params;
+    
+    // Search in LostItems first
+    let item = await LostItem.findOne({ qrCode }).populate('userId', 'name email');
+    let itemType = 'lost';
+    
+    // If not found, search in FoundItems
+    if (!item) {
+      item = await FoundItem.findOne({ qrCode }).populate('userId', 'name email');
+      itemType = 'found';
+    }
+    
+    if (!item) {
+      return res.status(404).json({ message: 'Item not found with this QR code' });
+    }
+    
+    res.json({
+      ...item.toObject(),
+      itemType,
+    });
+  } catch (error) {
+    console.error('Error fetching item by QR code:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+};
+
+// Update item status (Available / Claimed / Returned)
+const updateItemStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, claimedBy } = req.body;
+    
+    // Try to find in LostItems
+    let item = await LostItem.findById(id);
+    let itemType = 'lost';
+    
+    // If not found, try FoundItems
+    if (!item) {
+      item = await FoundItem.findById(id);
+      itemType = 'found';
+    }
+    
+    if (!item) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+    
+    // Update status
+    if (status) {
+      if (itemType === 'lost') {
+        item.status = status;
+      } else {
+        item.claimStatus = status;
+      }
+    }
+    
+    // If claiming, record claimant info
+    if (claimedBy) {
+      item.claimedBy = claimedBy;
+      item.claimedAt = new Date();
+    }
+    
+    await item.save();
+    
+    res.json({
+      message: 'Item status updated successfully',
+      item,
+    });
+  } catch (error) {
+    console.error('Error updating item status:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+};
+
+module.exports = { 
+  getLostItems, 
+  createLostItem, 
+  getFoundItems, 
+  createFoundItem,
+  getItemByQRCode,
+  updateItemStatus
+};

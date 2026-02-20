@@ -30,6 +30,15 @@ export const createFoundItem = async (data) => {
   return api.post('/lostfound/found', data);
 };
 
+// QR Code API
+export const getItemByQRCode = async (qrCode) => {
+  return api.get(`/lostfound/qr/${qrCode}`);
+};
+
+export const updateItemStatus = async (id, data) => {
+  return api.put(`/lostfound/status/${id}`, data);
+};
+
 // Notifications API
 export const getNotifications = async (type, status) => {
   let queryString = '';

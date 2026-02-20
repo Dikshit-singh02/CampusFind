@@ -8,8 +8,9 @@ const NoticePage = () => {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
 
-  const categories = ['All', 'General', 'Academic', 'Event', 'Emergency', 'Lost', 'Found'];
+  const categories = ['All', 'Lost', 'Found', 'General', 'Academic', 'Event', 'Emergency'];
 
+  // Fetch notices on mount and when search/filter changes
   useEffect(() => {
     fetchNotices();
   }, [search, category]);
@@ -18,17 +19,8 @@ const NoticePage = () => {
     try {
       setLoading(true);
       setError(null);
-      // Get all notices without type filter, only filter by status if not 'All'
-      const statusFilter = category === 'All' ? null : category;
-      const response = await getNotifications(null, statusFilter);
-      let filteredNotices = response.data;
-      if (search) {
-        filteredNotices = filteredNotices.filter(notice =>
-          notice.title.toLowerCase().includes(search.toLowerCase()) ||
-          notice.content.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-      setNotices(filteredNotices);
+      const response = await getNotifications('notification', category);
+      setNotices(response.data);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch notices');
       console.error('Error fetching notices:', err);
@@ -37,16 +29,19 @@ const NoticePage = () => {
     }
   };
 
+  // Handle search input change
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
 
+  // Handle category filter change
   const handleCategoryChange = (e) => {
     setCategory(e.target.value);
   };
 
-  const getStatusBadgeColor = (status) => {
-    switch (status) {
+  // Get badge color based on status/category
+  const getCategoryBadgeColor = (cat) => {
+    switch (cat) {
       case 'Lost':
         return 'bg-danger';
       case 'Found':
@@ -62,6 +57,7 @@ const NoticePage = () => {
     }
   };
 
+  // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -73,10 +69,21 @@ const NoticePage = () => {
     });
   };
 
+  // Filter notices by search
+  const filteredNotices = notices.filter(notice => {
+    const searchLower = search.toLowerCase();
+    return (
+      notice.title?.toLowerCase().includes(searchLower) ||
+      notice.content?.toLowerCase().includes(searchLower) ||
+      notice.itemDetails?.description?.toLowerCase().includes(searchLower)
+    );
+  });
+
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">Notices & Notifications</h2>
       
+      {/* Search and Filter Section */}
       <div className="row mb-4">
         <div className="col-md-6">
           <input
@@ -113,6 +120,7 @@ const NoticePage = () => {
         </div>
       </div>
 
+      {/* Loading State */}
       {loading && (
         <div className="text-center my-5">
           <div className="spinner-border" role="status">
@@ -121,46 +129,58 @@ const NoticePage = () => {
         </div>
       )}
 
+      {/* Error State */}
       {error && (
         <div className="alert alert-danger" role="alert">
           {error}
         </div>
       )}
 
+      {/* Notices Display */}
       {!loading && !error && (
         <div className="row">
-          {notices.length === 0 ? (
+          {filteredNotices.length === 0 ? (
             <div className="col-12">
               <div className="alert alert-info" role="alert">
                 No notices found.
               </div>
             </div>
           ) : (
-            notices.map((notice) => (
+            filteredNotices.map((notice) => (
               <div className="col-md-12 mb-3" key={notice._id}>
                 <div className="card">
                   <div className="card-header d-flex justify-content-between align-items-center">
                     <div>
                       <h5 className="mb-0">{notice.title}</h5>
                     </div>
-                    <span className={`badge ${getStatusBadgeColor(notice.status)}`}>
+                    <span className={`badge ${getCategoryBadgeColor(notice.status)}`}>
                       {notice.status}
                     </span>
                   </div>
                   <div className="card-body">
                     <p className="card-text">{notice.content}</p>
-                    {notice.itemDetails && (
-                      <div className="mt-2">
+                    
+                    {/* Item Details Section for Lost/Found notifications */}
+                    {notice.itemDetails && (notice.status === 'Lost' || notice.status === 'Found') && (
+                      <div className="mt-3 p-3 bg-light rounded">
+                        <h6 className="border-bottom pb-2">Item Details:</h6>
+                        {notice.itemDetails.description && (
+                          <p className="mb-1"><strong>Description:</strong> {notice.itemDetails.description}</p>
+                        )}
                         {notice.itemDetails.location && (
                           <p className="mb-1"><strong>Location:</strong> {notice.itemDetails.location}</p>
                         )}
+                        {notice.itemDetails.contactInfo && (
+                          <p className="mb-1"><strong>Contact:</strong> {notice.itemDetails.contactInfo}</p>
+                        )}
                         {notice.itemDetails.image && (
-                          <img 
-                            src={notice.itemDetails.image} 
-                            alt="Item" 
-                            style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '8px' }}
-                            className="mt-2"
-                          />
+                          <div className="mt-2">
+                            <img 
+                              src={notice.itemDetails.image} 
+                              alt="Item" 
+                              style={{ maxWidth: '200px', maxHeight: '150px', borderRadius: '5px' }}
+                            />
+                          </div>
                         )}
                       </div>
                     )}
