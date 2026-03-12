@@ -1,7 +1,23 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      setUser(JSON.parse(userStr));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/');
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
@@ -29,9 +45,18 @@ const Navbar = () => {
             <li className="nav-item">
               <Link className="nav-link" to="/sos">SOS</Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin">Admin</Link>
-            </li>
+            {user && user.role === 'admin' && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin">Admin</Link>
+              </li>
+            )}
+            {user ? (
+              <li className="nav-item">
+                <button className="btn btn-outline-light btn-sm ms-2" onClick={handleLogout}>
+                  Logout ({user.name})
+                </button>
+              </li>
+            ) : null}
           </ul>
         </div>
       </div>
@@ -40,3 +65,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

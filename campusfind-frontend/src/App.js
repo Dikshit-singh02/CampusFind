@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -12,6 +12,30 @@ import SOSPage from './pages/SOSPage';
 import AdminPanel from './pages/AdminPanel';
 import './App.css';
 
+// Private Route component
+const PrivateRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  return token ? children : <Navigate to="/" />;
+};
+
+// Admin Route component
+const AdminRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  const userStr = localStorage.getItem('user');
+  
+  if (!token) {
+    return <Navigate to="/" />;
+  }
+  
+  const user = userStr ? JSON.parse(userStr) : null;
+  
+  if (!user || user.role !== 'admin') {
+    return <Navigate to="/dashboard" />;
+  }
+  
+  return children;
+};
+
 function App() {
   return (
     <Router>
@@ -19,13 +43,41 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/map" element={<MapPage />} />
-        <Route path="/lostfound" element={<LostFoundPage />} />
-        <Route path="/notices" element={<NoticePage />} />
-        <Route path="/qr" element={<QRScannerPage />} />
-        <Route path="/sos" element={<SOSPage />} />
-        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/dashboard" element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        } />
+        <Route path="/map" element={
+          <PrivateRoute>
+            <MapPage />
+          </PrivateRoute>
+        } />
+        <Route path="/lostfound" element={
+          <PrivateRoute>
+            <LostFoundPage />
+          </PrivateRoute>
+        } />
+        <Route path="/notices" element={
+          <PrivateRoute>
+            <NoticePage />
+          </PrivateRoute>
+        } />
+        <Route path="/qr" element={
+          <PrivateRoute>
+            <QRScannerPage />
+          </PrivateRoute>
+        } />
+        <Route path="/sos" element={
+          <PrivateRoute>
+            <SOSPage />
+          </PrivateRoute>
+        } />
+        <Route path="/admin" element={
+          <AdminRoute>
+            <AdminPanel />
+          </AdminRoute>
+        } />
       </Routes>
     </Router>
   );

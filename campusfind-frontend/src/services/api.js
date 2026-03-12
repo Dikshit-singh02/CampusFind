@@ -4,12 +4,47 @@ const api = axios.create({
   baseURL: 'http://localhost:5000/api',
 });
 
+// Add token to requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Add response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('API Error:', error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
+
 export const signup = async (data) => {
   return api.post('/auth/signup', data);
 };
 
 export const login = async (data) => {
   return api.post('/auth/login', data);
+};
+
+// User Management API (Admin)
+export const getAllUsers = async () => {
+  return api.get('/users');
+};
+
+export const getUserStats = async () => {
+  return api.get('/users/stats');
+};
+
+export const updateUserRole = async (userId, role) => {
+  return api.put(`/users/${userId}/role`, { role });
+};
+
+export const deleteUser = async (userId) => {
+  return api.delete(`/users/${userId}`);
 };
 
 // Lost Items API
