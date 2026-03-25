@@ -320,20 +320,18 @@ const AdminPanel = () => {
                               </td>
                               <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                               <td>
-                                <div className="btn-group btn-group-sm" role="group">
+                                <div className="actions-group">
                                   <button
-                                    className="btn btn-outline-warning"
-                                    title="Change Role"
+                                    className="btn-action btn-edit"
                                     onClick={() => openUserModal(user)}
                                   >
-                                    <i className="fas fa-user-edit"></i>
+                                    Edit Role
                                   </button>
                                   <button
-                                    className="btn btn-outline-danger"
-                                    title="Delete User"
+                                    className="btn-action btn-delete"
                                     onClick={() => handleDeleteUser(user._id)}
                                   >
-                                    <i className="fas fa-trash"></i>
+                                    Delete
                                   </button>
                                 </div>
                               </td>
@@ -394,27 +392,24 @@ const AdminPanel = () => {
                                 <small className="text-muted">QR: {item.qrCode}</small>
                               </td>
                               <td>
-                                <div className="btn-group btn-group-sm" role="group">
+                                <div className="actions-group">
                                   <button
-                                    className="btn btn-outline-secondary btn-sm"
-                                    title="Copy QR"
+                                    className="btn-action btn-view"
                                     onClick={() => copyQRCode(item.qrCode)}
                                   >
-                                    <i className="fas fa-copy"></i>
+                                    View QR
                                   </button>
                                   <button
-                                    className="btn btn-outline-primary"
-                                    title="Edit"
+                                    className="btn-action btn-edit"
                                     onClick={() => openItemModal(item, 'lost')}
                                   >
-                                    <i className="fas fa-edit"></i>
+                                    Edit
                                   </button>
                                   <button
-                                    className="btn btn-outline-danger"
-                                    title="Delete"
+                                    className="btn-action btn-delete"
                                     onClick={() => handleDeleteItem(item._id, 'lost')}
                                   >
-                                    <i className="fas fa-trash"></i>
+                                    Delete
                                   </button>
                                 </div>
                               </td>
@@ -475,27 +470,24 @@ const AdminPanel = () => {
                                 <small className="text-muted">QR: {item.qrCode}</small>
                               </td>
                               <td>
-                                <div className="btn-group btn-group-sm" role="group">
+                                <div className="actions-group">
                                   <button
-                                    className="btn btn-outline-secondary btn-sm"
-                                    title="Copy QR"
+                                    className="btn-action btn-view"
                                     onClick={() => copyQRCode(item.qrCode)}
                                   >
-                                    <i className="fas fa-copy"></i>
+                                    View QR
                                   </button>
                                   <button
-                                    className="btn btn-outline-primary"
-                                    title="Edit"
+                                    className="btn-action btn-edit"
                                     onClick={() => openItemModal(item, 'found')}
                                   >
-                                    <i className="fas fa-edit"></i>
+                                    Edit
                                   </button>
                                   <button
-                                    className="btn btn-outline-danger"
-                                    title="Delete"
+                                    className="btn-action btn-delete"
                                     onClick={() => handleDeleteItem(item._id, 'found')}
                                   >
-                                    <i className="fas fa-trash"></i>
+                                    Delete
                                   </button>
                                 </div>
                               </td>

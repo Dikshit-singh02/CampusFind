@@ -1,5 +1,79 @@
 /* Admin Panel - Professional Navy/Teal Enterprise Design */
 
+/* === NEW ACTION BUTTON STYLES === */
+.actions-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-action {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-action:active {
+  transform: translateY(-1px);
+}
+
+.btn-action:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+}
+
+.btn-edit:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.btn-delete:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.btn-view {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.btn-view:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
+.btn-toggle {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.btn-toggle:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+}
+
 .admin-container {
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   min-height: 100vh;
@@ -203,7 +277,7 @@
 .status-claimed { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
 .status-returned { background: linear-gradient(135deg, #6b7280, #4b5563); color: white; }
 
-/* Buttons */
+/* Buttons - Legacy (kept for other uses) */
 .btn-group-sm .btn {
   border-radius: 12px;
   padding: 0.5rem 0.75rem;
@@ -258,27 +332,27 @@
     font-size: 0.9rem;
   }
   
-  .btn-group-sm {
+  .actions-group {
     flex-direction: column;
   }
   
-  .btn-group-sm .btn {
+  .btn-action {
     width: 100%;
-    margin-bottom: 0.25rem;
+    justify-content: center;
   }
 }
 
 /* High contrast accessibility */
 @media (prefers-contrast: high) {
+  .btn-action,
   .stat-card,
   .glass-card,
   .admin-table-card {
     border-width: 2px;
   }
   
-  .btn:focus-visible,
-  .nav-link:focus-visible {
-    outline: 3px solid var(--primary-color);
+  .btn-action:focus-visible {
+    outline: 4px solid currentColor;
     outline-offset: 2px;
   }
 }
@@ -292,4 +366,3 @@
     transition-duration: 0.01ms !important;
   }
 }
-
