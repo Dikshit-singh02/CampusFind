@@ -9,9 +9,12 @@ import MapPage from './pages/MapPage';
 import LostFoundPage from './pages/LostFoundPage';
 import NoticePage from './pages/NoticePage';
 import QRGeneratorPage from './pages/QRGeneratorPage';
+import EventsPage from './pages/EventsPage';
+import EventPage from './pages/EventPage';
 import SOSPage from './pages/SOSPage';
 import AdminPanel from './pages/AdminPanel';
 import './App.css';
+
 
 // Private Route component
 const PrivateRoute = ({ children }) => {
@@ -79,6 +82,8 @@ function App() {
               <NoticePage />
             </PrivateRoute>
           } />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/event/:id" element={<EventPage />} />
           <Route path="/qr" element={
             <PrivateRoute>
               <QRGeneratorPage />
@@ -89,6 +94,7 @@ function App() {
               <QRGeneratorPage />
             </PrivateRoute>
           } />
+
           <Route path="/sos" element={
             <PrivateRoute>
               <SOSPage />
@@ -99,6 +105,7 @@ function App() {
               <AdminPanel />
             </AdminRoute>
           } />
+          
         </Routes>
       </Router>
     </div>

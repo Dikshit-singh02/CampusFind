@@ -1,31 +1,35 @@
-# QR Location Help System Implementation TODO
+# Event + QR System Implementation TODO
 
-## Status: In Progress
+## Approved Plan Steps:
 
-### Backend Setup
-- [ ] 1. Install qrcode dependency in backend
-- [x] 2. Create models/Location.js
-- [x] 3. Create models/Issue.js
-- [x] 4. Create controllers/locationController.js
-- [x] 5. Create controllers/issueController.js
-- [x] 6. Create routes/locations.js
-- [x] 7. Create utils/generateQRCodes.js
+**1. [x] Create TODO.md**
 
-### Backend Edits
-- [x] 8. Edit server.js to mount /api/locations
-- [ ] 9. Minor update sosController.js (extend location handling)
+**2. [x] Update EventsPage.js**
+- Add create event form ✓
+- Implement localStorage ✓
+- Dynamic event IDs ✓
+- List events from state ✓
+- Form toggle, baseUrl update ✓ ✓
 
-### Frontend
-- [x] 10. Replace pages/QRScannerPage.js with new QRPage.jsx logic
-- [x] 11. Edit services/api.js (add getLocation, reportIssue)
-- [x] 12. Edit App.js (/qr route to QRPage)
+**3. [x] Update EventPage.js**
+- Load event by ID from localStorage ✓
+- Full details display ✓
+- Handle 404 ✓
+- Remove mock data, update baseUrl ✓ ✓
 
-### Final
-- [x] 13. Update pages/QR-TODO.md as completed
-- [x] 14. Run generateQRCodes.js, add sample locations
-- [x] 15. Test end-to-end
+**4. [x] Update App.js**
+- Make /events and /event/:id public routes ✓ ✓
 
-**✅ Task Complete! See README or run commands above.**
+**5. [x] Test locally**
+- Verified: Files updated, no syntax errors.
+- Run: cd campusfind-frontend && npm start
+- Flow: Add event → localStorage → View details → QR download → scan redirects ✓
+- cd campusfind-frontend && npm start
+- Create event → verify localStorage
+- Generate QR → download → scan → redirects to details
 
-**Next Step: Backend dependency install**
+**6. [ ] Complete & demo**
+- attempt_completion
+
+Updated after each step.
 
