@@ -78,218 +78,288 @@ const QRScannerPage = () => {
   const getStatusBadgeColor = (status) => {
     switch (status) {
       case 'Available':
-        return 'bg-success';
+        return 'badge-success';
       case 'Claimed':
-        return 'bg-warning';
+        return 'badge-warning';
       case 'Returned':
-        return 'bg-info';
+        return 'badge-info';
       default:
-        return 'bg-secondary';
+        return 'badge-secondary';
     }
   };
 
   // Get item type badge
   const getItemTypeBadge = (type) => {
-    return type === 'lost' ? 'bg-danger' : 'bg-primary';
+    return type === 'lost' ? 'badge-danger' : 'badge-primary';
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">QR Scanner - Lost & Found</h2>
-      
-      {/* Manual QR Code Input */}
-      <div className="row mb-4">
-        <div className="col-md-8 offset-md-2">
-          <div className="card">
-            <div className="card-header bg-primary text-white">
-              <h5 className="mb-0">Enter QR Code</h5>
+    <div className="container mt-5 p-4">
+      <div className="row justify-content-center">
+        <div className="col-lg-10">
+          <div className="text-center mb-5">
+            <h1 className="display-5 fw-bold mb-3 text-primary">QR Scanner</h1>
+            <p className="lead text-muted mb-0">Scan or enter QR code to manage lost & found items</p>
+          </div>
+
+          {/* QR Code Input */}
+          <div className="card shadow-lg border-0 mb-5">
+            <div className="card-header bg-primary text-white py-4">
+              <h4 className="mb-0 fw-semibold">🔍 Search by QR Code</h4>
             </div>
-            <div className="card-body">
-              <form onSubmit={handleManualSearch} className="d-flex gap-2">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter QR code (e.g., LOST-xxx or FOUND-xxx)"
-                  value={manualCode}
-                  onChange={(e) => setManualCode(e.target.value)}
-                  ref={inputRef}
-                />
-                <button type="submit" className="btn btn-primary">
-                  Search
-                </button>
+            <div className="card-body p-4">
+              <form onSubmit={handleManualSearch} className="row g-3">
+                <div className="col-md-9">
+                  <div className="input-group input-group-lg">
+                    <span className="input-group-text bg-light border-end-0">
+                      <i className="fas fa-qrcode text-primary"></i>
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control border-start-0 fs-6 py-3"
+                      placeholder="Enter QR code (e.g., LOST-001 or FOUND-ABC)"
+                      value={manualCode}
+                      onChange={(e) => setManualCode(e.target.value)}
+                      ref={inputRef}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-3">
+                  <button type="submit" className="btn btn-primary btn-lg w-100 py-3" disabled={loading}>
+                    {loading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                        Searching...
+                      </>
+                    ) : 'Search'}
+                  </button>
+                </div>
               </form>
-              <small className="text-muted mt-2 d-block">
-                Tip: Enter the QR code manually or use a QR scanner app
-              </small>
+              <div className="text-center mt-3">
+                <small className="text-muted">
+                  💡 Or use your phone's QR scanner app and enter the code above
+                </small>
+              </div>
             </div>
+          </div>
+
+          <div className="qr-main-content">
+            {/* Messages */}
+            {error && (
+              <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                <i className="fas fa-exclamation-triangle me-2"></i>
+                {error}
+                <button type="button" className="btn-close" onClick={() => setError(null)}></button>
+              </div>
+            )}
+
+            {success && (
+              <div className="alert alert-success alert-dismissible fade show" role="alert">
+                <i className="fas fa-check-circle me-2"></i>
+                {success}
+                <button type="button" className="btn-close" onClick={() => setSuccess(null)}></button>
+              </div>
+            )}
+
+            {/* Item Details */}
+            {item && !loading && (
+              <div className="card shadow-xl border-0">
+                <div className="card-header bg-gradient-primary text-white py-4 px-4">
+                  <div className="row align-items-center">
+                    <div className="col-md-8">
+                      <h3 className="mb-1 fw-bold">{item.title}</h3>
+                      <div className="d-flex align-items-center gap-2 flex-wrap">
+                        <code className="bg-dark text-white px-2 py-1 rounded small">
+                          QR: {item.qrCode}
+                        </code>
+                        <span className={`badge fs-6 px-3 py-2 ${getItemTypeBadge(item.itemType)}`}>
+                          {item.itemType === 'lost' ? 'LOST ITEM' : 'FOUND ITEM'}
+                        </span>
+                        <span className={`badge fs-6 px-3 py-2 ${getStatusBadgeColor(item.status || item.claimStatus)}`}>
+                          {item.status || item.claimStatus}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-md-4 text-md-end mt-2 mt-md-0">
+                      <small className="opacity-75">Scanned: {new Date().toLocaleTimeString()}</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card-body p-4 p-md-5">
+                  {/* Item Image */}
+                  {item.image && (
+                    <div className="text-center mb-4">
+                      <div className="item-image-container position-relative">
+                        <img 
+                          src={item.image} 
+                          alt={item.title}
+                          className="img-fluid rounded-3 shadow-lg" 
+                          style={{ maxHeight: '320px', objectFit: 'cover' }}
+                        />
+                        <div className="position-absolute top-0 start-0 bg-primary text-white px-2 py-1 rounded-bottom-3 small fw-bold">
+                          Photo
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="row g-4">
+                    {/* Main Details */}
+                    <div className="col-lg-8">
+                      <div className="detail-section mb-4 p-4 bg-light rounded-3 shadow-sm">
+                        <h5 className="fw-bold mb-3 text-dark">
+                          <i className="fas fa-info-circle me-2 text-primary"></i>
+                          Item Details
+                        </h5>
+                        <div className="row g-3">
+                          <div className="col-md-6">
+                            <label className="form-label fw-semibold text-muted small mb-1">Description</label>
+                            <p className="fs-5 mb-0 lh-lg">{item.description}</p>
+                          </div>
+                          <div className="col-md-6">
+                            <label className="form-label fw-semibold text-muted small mb-1">Location</label>
+                            <div className="d-flex align-items-center">
+                              <p className="fs-5 mb-0 me-3 lh-1">{item.location}</p>
+                              <button 
+                                className="btn btn-outline-primary btn-sm px-3 py-1"
+                                onClick={handleViewOnMap}
+                              >
+                                <i className="fas fa-map-marker-alt me-1"></i>
+                                View Map
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {item.contactInfo && (
+                        <div className="detail-section mb-4 p-4 bg-light rounded-3 shadow-sm">
+                          <h5 className="fw-bold mb-3 text-dark">
+                            <i className="fas fa-phone me-2 text-success"></i>
+                            Contact Information
+                          </h5>
+                          <p className="fs-5 mb-1 lh-lg">{item.contactInfo}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Sidebar Info */}
+                    <div className="col-lg-4">
+                      {item.userId && (
+                        <div className="detail-section mb-4 p-4 bg-light rounded-3 shadow-sm">
+                          <h6 className="fw-bold mb-3 text-dark border-bottom pb-2">
+                            👤 {item.itemType === 'lost' ? 'Owner' : 'Finder'}
+                          </h6>
+                          <p className="mb-1"><strong>Name:</strong> {item.userId.name || 'N/A'}</p>
+                          <p className="mb-0"><strong>Email:</strong> {item.userId.email || 'N/A'}</p>
+                        </div>
+                      )}
+
+                      <div className="detail-section p-4 bg-light rounded-3 shadow-sm">
+                        <h6 className="fw-bold mb-3 text-dark border-bottom pb-2">
+                          📅 Timeline
+                        </h6>
+                        <div className="small text-muted">
+                          <div className="d-flex justify-content-between mb-1">
+                            <span>Reported</span>
+                            <span>{new Date(item.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          <div className="d-flex justify-content-between">
+                            <span>Last Updated</span>
+                            <span>{new Date(item.updatedAt).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Status Update Section */}
+                <div className="card-footer bg-gradient-secondary p-4">
+                  <div className="row align-items-center">
+                    <div className="col-md-8">
+                      <h5 className="text-white mb-3 fw-semibold">⚙️ Update Status</h5>
+                      <div className="row g-2">
+                        <div className="col">
+                          <button
+                            className="btn btn-success w-100 py-3 fs-6 fw-semibold"
+                            onClick={() => handleStatusUpdate('Available')}
+                            disabled={loading || (item.status === 'Available' || item.claimStatus === 'Available')}
+                          >
+                            ✅ Available
+                          </button>
+                        </div>
+                        <div className="col">
+                          <button
+                            className="btn btn-warning w-100 py-3 fs-6 fw-semibold"
+                            onClick={() => handleStatusUpdate('Claimed')}
+                            disabled={loading || (item.status === 'Claimed' || item.claimStatus === 'Claimed')}
+                          >
+                            👤 Claimed
+                          </button>
+                        </div>
+                        <div className="col">
+                          <button
+                            className="btn btn-info w-100 py-3 fs-6 fw-semibold"
+                            onClick={() => handleStatusUpdate('Returned')}
+                            disabled={loading || (item.status === 'Returned' || item.claimStatus === 'Returned')}
+                          >
+                            📦 Returned
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-4 text-md-end mt-3 mt-md-0">
+                      <div className="text-white-50">
+                        <small className="d-block mb-1 opacity-75">
+                          Status changes saved instantly
+                        </small>
+                        <small>Scanned: {new Date().toLocaleString()}</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!item && !loading && !error && (
+              <div className="row justify-content-center mt-5">
+                <div className="col-md-8 text-center">
+                  <div className="card border-0 shadow-lg p-5 bg-light rounded-4">
+                    <div className="display-1 mb-4 text-primary opacity-75">📱</div>
+                    <h3 className="fw-normal mb-3 text-dark">Ready to Scan</h3>
+                    <p className="lead text-muted mb-4">
+                      Enter QR code from lost or found item to view details and update status.
+                    </p>
+                    <div className="row g-3 justify-content-center">
+                      <div className="col-auto">
+                        <div className="p-3 bg-white rounded-3 shadow-sm">
+                          <i className="fas fa-qrcode fa-2x text-primary mb-2"></i>
+                          <div className="small fw-semibold text-dark">QR Code</div>
+                        </div>
+                      </div>
+                      <div className="col-auto">
+                        <div className="p-3 bg-white rounded-3 shadow-sm">
+                          <i className="fas fa-search fa-2x text-success mb-2"></i>
+                          <div className="small fw-semibold text-dark">Search</div>
+                        </div>
+                      </div>
+                      <div className="col-auto">
+                        <div className="p-3 bg-white rounded-3 shadow-sm">
+                          <i className="fas fa-edit fa-2x text-info mb-2"></i>
+                          <div className="small fw-semibold text-dark">Update</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      {/* Loading State */}
-      {loading && (
-        <div className="text-center my-5">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-2">Searching for item...</p>
-        </div>
-      )}
-
-      {/* Error Message */}
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          {error}
-        </div>
-      )}
-
-      {/* Success Message */}
-      {success && (
-        <div className="alert alert-success" role="alert">
-          {success}
-        </div>
-      )}
-
-      {/* Item Details Card */}
-      {item && !loading && (
-        <div className="row">
-          <div className="col-md-8 offset-md-2">
-            <div className="card shadow-lg">
-              <div className="card-header d-flex justify-content-between align-items-center">
-                <div>
-                  <h4 className="mb-0">{item.title}</h4>
-                  <small className="text-muted">QR: {item.qrCode}</small>
-                </div>
-                <div>
-                  <span className={`badge ${getItemTypeBadge(item.itemType)} me-2`}>
-                    {item.itemType === 'lost' ? 'Lost Item' : 'Found Item'}
-                  </span>
-                  <span className={`badge ${getStatusBadgeColor(item.status || item.claimStatus)}`}>
-                    {item.status || item.claimStatus}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="card-body">
-                {/* Item Image */}
-                {item.image && (
-                  <div className="text-center mb-3">
-                    <img 
-                      src={item.image} 
-                      alt={item.title}
-                      style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px' }}
-                      className="img-fluid"
-                    />
-                  </div>
-                )}
-                
-                {/* Item Description */}
-                <div className="mb-3">
-                  <h6>Description:</h6>
-                  <p>{item.description}</p>
-                </div>
-                
-                {/* Location */}
-                <div className="mb-3">
-                  <h6>Location:</h6>
-                  <p>{item.location}</p>
-                  <button 
-                    className="btn btn-outline-primary btn-sm"
-                    onClick={handleViewOnMap}
-                  >
-                    📍 View on Map
-                  </button>
-                </div>
-                
-                {/* Contact Info */}
-                {item.contactInfo && (
-                  <div className="mb-3">
-                    <h6>Contact Info:</h6>
-                    <p>{item.contactInfo}</p>
-                  </div>
-                )}
-                
-                {/* Owner/Finder Info */}
-                {item.userId && (
-                  <div className="mb-3">
-                    <h6>{item.itemType === 'lost' ? 'Owner:' : 'Finder:'}</h6>
-                    <p>{item.userId.name || 'Unknown'} ({item.userId.email || 'No email'})</p>
-                  </div>
-                )}
-                
-                {/* Timestamps */}
-                <div className="text-muted">
-                  <small>
-                    Reported: {new Date(item.createdAt).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </small>
-                </div>
-              </div>
-              
-              {/* Action Buttons */}
-              <div className="card-footer">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6 className="mb-2">Update Status:</h6>
-                    <div className="btn-group" role="group">
-                      <button
-                        className="btn btn-success btn-sm"
-                        onClick={() => handleStatusUpdate('Available')}
-                        disabled={item.status === 'Available' || item.claimStatus === 'Available'}
-                      >
-                        Available
-                      </button>
-                      <button
-                        className="btn btn-warning btn-sm"
-                        onClick={() => handleStatusUpdate('Claimed')}
-                        disabled={item.status === 'Claimed' || item.claimStatus === 'Claimed'}
-                      >
-                        Claimed
-                      </button>
-                      <button
-                        className="btn btn-info btn-sm"
-                        onClick={() => handleStatusUpdate('Returned')}
-                        disabled={item.status === 'Returned' || item.claimStatus === 'Returned'}
-                      >
-                        Returned
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div className="text-end">
-                    <small className="text-muted">
-                      Last Updated: {new Date(item.updatedAt).toLocaleDateString()}
-                    </small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!item && !loading && !error && (
-        <div className="text-center my-5">
-          <div className="card">
-            <div className="card-body">
-              <h5>No Item Selected</h5>
-              <p className="text-muted">
-                Enter a QR code above to view item details and manage claims.
-              </p>
-              <div className="mt-4">
-                <span style={{ fontSize: '4rem' }}>📱</span>
-                <span style={{ fontSize: '4rem' }}>🔍</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
