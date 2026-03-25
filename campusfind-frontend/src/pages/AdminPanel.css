@@ -1,0 +1,295 @@
+/* Admin Panel - Professional Navy/Teal Enterprise Design */
+
+.admin-container {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.page-header {
+  color: var(--text-primary);
+  font-weight: 700;
+  margin-bottom: 3rem;
+  text-align: center;
+  position: relative;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--primary-gradient);
+  border-radius: 2px;
+}
+
+/* Stats Cards */
+.stats-grid {
+  margin-bottom: 3rem;
+}
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  height: 100%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: var(--primary-color);
+}
+
+.stat-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Alerts */
+.alert-custom {
+  border: none;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.alert-success-custom {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.alert-danger-custom {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+/* Tabs */
+.admin-tabs .nav-link {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px 16px 0 0;
+  padding: 1rem 2rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  margin-right: 0.25rem;
+}
+
+.admin-tabs .nav-link.active {
+  background: var(--primary-gradient);
+  color: white;
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+/* Tables */
+.admin-table-card {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  margin-bottom: 2rem;
+}
+
+.admin-table-card .card-header {
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1.5rem 2rem;
+}
+
+.table-header-text {
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.refresh-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--primary-color);
+  border-radius: 12px;
+  color: var(--primary-color);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.admin-table {
+  margin: 0;
+}
+
+.admin-table thead th {
+  background: #f8fafc;
+  border: none;
+  font-weight: 700;
+  color: var(--text-primary);
+  padding: 1.5rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.admin-table tbody td {
+  padding: 1.25rem 1rem;
+  vertical-align: middle;
+  border-color: #f1f5f9;
+}
+
+.role-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.role-admin { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+.role-faculty { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+.role-student { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; }
+
+.status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.status-available { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+.status-claimed { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+.status-returned { background: linear-gradient(135deg, #6b7280, #4b5563); color: white; }
+
+/* Buttons */
+.btn-group-sm .btn {
+  border-radius: 12px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  border: 1px solid;
+  transition: all 0.3s ease;
+}
+
+.btn-group-sm .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Modals */
+.modal-content-custom {
+  border: none;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.modal-header-custom {
+  background: linear-gradient(135deg, var(--primary-gradient));
+  color: white;
+  border: none;
+  padding: 1.5rem 2rem;
+}
+
+.modal-role-buttons .btn {
+  border-radius: 16px;
+  padding: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  border: 2px solid;
+  transition: all 0.3s ease;
+}
+
+.modal-role-buttons .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stats-grid .col-xl-2 {
+    flex: 0 0 50%;
+    max-width: 50%;
+    margin-bottom: 1.5rem;
+  }
+  
+  .admin-table {
+    font-size: 0.9rem;
+  }
+  
+  .btn-group-sm {
+    flex-direction: column;
+  }
+  
+  .btn-group-sm .btn {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* High contrast accessibility */
+@media (prefers-contrast: high) {
+  .stat-card,
+  .glass-card,
+  .admin-table-card {
+    border-width: 2px;
+  }
+  
+  .btn:focus-visible,
+  .nav-link:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
