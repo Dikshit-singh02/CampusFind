@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard';
 import MapPage from './pages/MapPage';
 import LostFoundPage from './pages/LostFoundPage';
 import NoticePage from './pages/NoticePage';
-import QRScannerPage from './pages/QRScannerPage';
+import QRGeneratorPage from './pages/QRGeneratorPage';
 import SOSPage from './pages/SOSPage';
 import AdminPanel from './pages/AdminPanel';
 import './App.css';
@@ -81,7 +81,12 @@ function App() {
           } />
           <Route path="/qr" element={
             <PrivateRoute>
-              <QRScannerPage />
+              <QRGeneratorPage />
+            </PrivateRoute>
+          } />
+          <Route path="/qr-generator" element={
+            <PrivateRoute>
+              <QRGeneratorPage />
             </PrivateRoute>
           } />
           <Route path="/sos" element={

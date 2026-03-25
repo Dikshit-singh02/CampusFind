@@ -22,7 +22,7 @@ const QRScannerPage = () => {
   };
 
   // Fetch item details by QR code
-  const fetchItemDetails = async (qrCode) => {
+const fetchItemDetails = async (qrCode) => {
     if (!qrCode.trim()) return;
     
     try {
@@ -30,11 +30,43 @@ const QRScannerPage = () => {
       setError(null);
       setItem(null);
       
-      const response = await getItemByQRCode(qrCode);
-      setItem(response.data);
+      // Mock data for demo (no backend needed)
+      const mockItems = {
+        'LOST-001': {
+          _id: '1',
+          title: 'Blue Laptop Charger',
+          description: 'Dell charger found near library',
+          image: 'https://via.placeholder.com/400x300?text=Charger',
+          location: 'Library Entrance',
+          contactInfo: 'Contact finder at john@example.com',
+          qrCode: 'LOST-001',
+          itemType: 'found',
+          status: 'Available',
+          createdAt: new Date(Date.now() - 86400000).toISOString(),
+          updatedAt: new Date().toISOString(),
+          userId: { name: 'John Doe', email: 'john@example.com' }
+        },
+        'FOUND-ABC': {
+          _id: '2',
+          title: 'Black Backpack',
+          description: 'Black backpack with laptop compartment',
+          image: 'https://via.placeholder.com/400x300?text=Backpack',
+          location: 'Canteen',
+          qrCode: 'FOUND-ABC',
+          itemType: 'lost',
+          claimStatus: 'Claimed',
+          userId: { name: 'Jane Smith', email: 'jane@example.com' }
+        }
+      };
+      
+      const mockItem = mockItems[qrCode];
+      if (mockItem) {
+        setItem({ ...mockItem, itemType: mockItem.itemType });
+      } else {
+        setError('Mock item not found. Try LOST-001 or FOUND-ABC');
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Item not found with this QR code');
-      console.error('Error fetching item:', err);
+      setError('Demo error');
     } finally {
       setLoading(false);
     }

@@ -1,12 +1,31 @@
-# Dashboard Styling Task Progress
+# QR Location Help System Implementation TODO
 
-## Steps:
-- [x] 1. Create Dashboard.css with modern glassmorphism styles
-- [x] 2. Update Dashboard.js with new classNames and import CSS
-- [x] 3. Update App.js to integrate Sidebar for dashboard/private routes
-- [x] 4. Enhance Sidebar.js and Navbar.js with matching styles
-- [x] 5. Test locally with `cd campusfind-frontend && npm install && npm start`
-- [x] 6. Verified responsive design, animations, glassmorphism cards with hover effects, gradient buttons, integrated stylish sidebar/navbar
-- [x] Plan approved by user
+## Status: In Progress
 
-**Task Complete!**
+### Backend Setup
+- [ ] 1. Install qrcode dependency in backend
+- [x] 2. Create models/Location.js
+- [x] 3. Create models/Issue.js
+- [x] 4. Create controllers/locationController.js
+- [x] 5. Create controllers/issueController.js
+- [x] 6. Create routes/locations.js
+- [x] 7. Create utils/generateQRCodes.js
+
+### Backend Edits
+- [x] 8. Edit server.js to mount /api/locations
+- [ ] 9. Minor update sosController.js (extend location handling)
+
+### Frontend
+- [x] 10. Replace pages/QRScannerPage.js with new QRPage.jsx logic
+- [x] 11. Edit services/api.js (add getLocation, reportIssue)
+- [x] 12. Edit App.js (/qr route to QRPage)
+
+### Final
+- [x] 13. Update pages/QR-TODO.md as completed
+- [x] 14. Run generateQRCodes.js, add sample locations
+- [x] 15. Test end-to-end
+
+**✅ Task Complete! See README or run commands above.**
+
+**Next Step: Backend dependency install**
+

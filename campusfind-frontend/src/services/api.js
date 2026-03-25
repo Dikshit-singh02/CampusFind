@@ -115,4 +115,17 @@ export const createNotification = async (data) => {
   return api.post('/notifications', data);
 };
 
+// Location Help System APIs
+export const getLocation = async (code) => {
+  return api.get(`/locations/${code}`);
+};
+
+export const reportIssue = async (data) => {
+  return api.post('/locations/issues', data);
+};
+
+export const createSOS = async (data) => {
+  return api.post('/sos', data);
+};
+
 export default api;
