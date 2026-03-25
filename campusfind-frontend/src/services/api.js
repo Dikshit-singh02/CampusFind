@@ -74,6 +74,31 @@ export const updateItemStatus = async (id, data) => {
   return api.put(`/lostfound/status/${id}`, data);
 };
 
+// ========== ADMIN LOST & FOUND ==========
+export const getLostItemById = async (id) => {
+  return api.get(`/lostfound/admin/lost/${id}`);
+};
+
+export const updateLostItem = async (id, data) => {
+  return api.put(`/lostfound/admin/lost/${id}`, data);
+};
+
+export const deleteLostItem = async (id) => {
+  return api.delete(`/lostfound/admin/lost/${id}`);
+};
+
+export const getFoundItemById = async (id) => {
+  return api.get(`/lostfound/admin/found/${id}`);
+};
+
+export const updateFoundItem = async (id, data) => {
+  return api.put(`/lostfound/admin/found/${id}`, data);
+};
+
+export const deleteFoundItem = async (id) => {
+  return api.delete(`/lostfound/admin/found/${id}`);
+};
+
 // Notifications API
 export const getNotifications = async (type, status) => {
   let queryString = '';

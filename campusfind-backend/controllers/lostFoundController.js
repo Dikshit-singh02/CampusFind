@@ -1,12 +1,12 @@
-//Hello
+// Lost & Found Admin Controller
 const LostItem = require('../models/LostItem');
 const FoundItem = require('../models/FoundItem');
 const { createLostItemNotification, createFoundItemNotification } = require('./noticeController');
 
-// Lost Items
+// ========== LOST ITEMS ==========
 const getLostItems = async (req, res) => {
   try {
-    const lostItems = await LostItem.find().populate('userId', 'name email');
+    const lostItems = await LostItem.find().populate('userId', 'name email').populate('claimedBy', 'name email');
     res.json(lostItems);
   } catch (error) {
     console.error('Error fetching lost items:', error);
@@ -47,10 +47,53 @@ const createLostItem = async (req, res) => {
   }
 };
 
-// Found Items
+const getLostItemById = async (req, res) => {
+  try {
+    const item = await LostItem.findById(req.params.id).populate('userId', 'name email').populate('claimedBy', 'name email');
+    if (!item) {
+      return res.status(404).json({ message: 'Lost item not found' });
+    }
+    res.json(item);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const updateLostItem = async (req, res) => {
+  try {
+    const { title, description, image, location, contactInfo, status } = req.body;
+    const item = await LostItem.findByIdAndUpdate(
+      req.params.id,
+      { title, description, image, location, contactInfo, status },
+      { new: true, runValidators: true }
+    ).populate('userId', 'name email').populate('claimedBy', 'name email');
+    
+    if (!item) {
+      return res.status(404).json({ message: 'Lost item not found' });
+    }
+    
+    res.json({ message: 'Lost item updated', item });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+};
+
+const deleteLostItem = async (req, res) => {
+  try {
+    const item = await LostItem.findByIdAndDelete(req.params.id);
+    if (!item) {
+      return res.status(404).json({ message: 'Lost item not found' });
+    }
+    res.json({ message: 'Lost item deleted' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// ========== FOUND ITEMS ==========
 const getFoundItems = async (req, res) => {
   try {
-    const foundItems = await FoundItem.find().populate('userId', 'name email');
+    const foundItems = await FoundItem.find().populate('userId', 'name email').populate('claimedBy', 'name email');
     res.json(foundItems);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -88,7 +131,50 @@ const createFoundItem = async (req, res) => {
   }
 };
 
-// Get item by QR code
+const getFoundItemById = async (req, res) => {
+  try {
+    const item = await FoundItem.findById(req.params.id).populate('userId', 'name email').populate('claimedBy', 'name email');
+    if (!item) {
+      return res.status(404).json({ message: 'Found item not found' });
+    }
+    res.json(item);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const updateFoundItem = async (req, res) => {
+  try {
+    const { title, description, image, location, contactInfo, claimStatus } = req.body;
+    const item = await FoundItem.findByIdAndUpdate(
+      req.params.id,
+      { title, description, image, location, contactInfo, claimStatus },
+      { new: true, runValidators: true }
+    ).populate('userId', 'name email').populate('claimedBy', 'name email');
+    
+    if (!item) {
+      return res.status(404).json({ message: 'Found item not found' });
+    }
+    
+    res.json({ message: 'Found item updated', item });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+};
+
+const deleteFoundItem = async (req, res) => {
+  try {
+    const item = await FoundItem.findByIdAndDelete(req.params.id);
+    if (!item) {
+      return res.status(404).json({ message: 'Found item not found' });
+    }
+    res.json({ message: 'Found item deleted' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// ========== QR & Status (existing) ==========
 const getItemByQRCode = async (req, res) => {
   try {
     const { qrCode } = req.params;
@@ -117,7 +203,6 @@ const getItemByQRCode = async (req, res) => {
   }
 };
 
-// Update item status (Available / Claimed / Returned)
 const updateItemStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -165,10 +250,7 @@ const updateItemStatus = async (req, res) => {
 };
 
 module.exports = { 
-  getLostItems, 
-  createLostItem, 
-  getFoundItems, 
-  createFoundItem,
-  getItemByQRCode,
-  updateItemStatus
+  getLostItems, createLostItem, getLostItemById, updateLostItem, deleteLostItem,
+  getFoundItems, createFoundItem, getFoundItemById, updateFoundItem, deleteFoundItem,
+  getItemByQRCode, updateItemStatus
 };
