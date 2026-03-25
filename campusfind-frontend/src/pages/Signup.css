@@ -1,0 +1,106 @@
+/* Signup Modern Glassmorphism */
+
+.signup-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+}
+
+.signup-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(120,119,198,0.3) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(255,119,198,0.3) 0%, transparent 50%);
+  animation: gradientShift 15s ease-in-out infinite;
+}
+
+.signup-glass-form {
+  background: var(--glass-bg);
+  backdrop-filter: blur(25px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: var(--shadow-xl);
+  max-width: 450px;
+  width: 100%;
+  animation: slideUp 0.8s ease-out;
+  position: relative;
+  z-index: 2;
+}
+
+.signup-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.signup-input {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 16px 20px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  font-size: 1rem;
+}
+
+.signup-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25);
+  background: rgba(255,255,255,1);
+  transform: scale(1.02);
+}
+
+.signup-btn {
+  background: var(--primary-gradient);
+  border: none;
+  border-radius: 50px;
+  padding: 16px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+}
+
+.signup-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-xl);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@media (max-width: 576px) {
+  .signup-glass-form {
+    margin: 1rem;
+    padding: 2rem;
+  }
+}
+
