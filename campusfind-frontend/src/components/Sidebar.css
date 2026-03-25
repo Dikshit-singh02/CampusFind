@@ -1,0 +1,97 @@
+/* Enhanced Sidebar Styles - Matching Dashboard Theme */
+
+.sidebar-root {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 56px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 2px 0 20px rgba(0,0,0,0.1);
+  z-index: 1000;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  padding: 15px 25px;
+  color: #333;
+  text-decoration: none;
+  display: block;
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.sidebar-item:hover {
+  background: rgba(102, 126, 234, 0.1);
+  border-left-color: #667eea;
+  transform: translateX(8px);
+  box-shadow: inset 5px 0 0 rgba(102, 126, 234, 0.2);
+  color: #667eea;
+}
+
+.sidebar-item.active {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+  border-left-color: #667eea;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.sidebar-item::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(102, 126, 234, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.sidebar-item:hover::before {
+  opacity: 1;
+}
+
+@media (max-width: 992px) {
+  .sidebar-root {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar-root.open {
+    transform: translateX(0);
+  }
+}
+
+/* Scrollbar styling */
+.sidebar-root::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-root::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+}
+
+.sidebar-root::-webkit-scrollbar-thumb {
+  background: linear-gradient(#667eea, #764ba2);
+  border-radius: 10px;
+}
+
+.sidebar-root::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(#5a67d8, #6b46c1);
+}

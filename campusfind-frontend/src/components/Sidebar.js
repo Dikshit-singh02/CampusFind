@@ -1,18 +1,35 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import './Sidebar.css';
 
 const Sidebar = () => {
+  const location = useLocation();
+
+  const menuItems = [
+    { to: '/dashboard', label: 'Dashboard', icon: '📊' },
+    { to: '/map', label: 'Map', icon: '🗺️' },
+    { to: '/lostfound', label: 'Lost & Found', icon: '🔍' },
+    { to: '/notices', label: 'Notices', icon: '📢' },
+    { to: '/qr', label: 'QR Scanner', icon: '📱' },
+    { to: '/sos', label: 'SOS', icon: '🚨' },
+    { to: '/admin', label: 'Admin Panel', icon: '⚙️' }
+  ];
+
   return (
-    <div className="bg-light border-right" id="sidebar-wrapper" style={{ width: '250px', height: '100vh', position: 'fixed', left: 0, top: 0, paddingTop: '56px' }}>
-      <div className="list-group list-group-flush">
-        <Link to="/dashboard" className="list-group-item list-group-item-action">Dashboard</Link>
-        <Link to="/map" className="list-group-item list-group-item-action">Map</Link>
-        <Link to="/lostfound" className="list-group-item list-group-item-action">Lost & Found</Link>
-        <Link to="/notices" className="list-group-item list-group-item-action">Notices</Link>
-        <Link to="/qr" className="list-group-item list-group-item-action">QR Scanner</Link>
-        <Link to="/sos" className="list-group-item list-group-item-action">SOS</Link>
-        <Link to="/admin" className="list-group-item list-group-item-action">Admin Panel</Link>
-      </div>
+    <div className="sidebar-root">
+      <ul className="sidebar-list">
+        {menuItems.map((item) => (
+          <li key={item.to}>
+            <Link 
+              to={item.to} 
+              className={`sidebar-item ${location.pathname === item.to ? 'active' : ''}`}
+            >
+              <span style={{marginRight: '12px'}}>{item.icon}</span>
+              {item.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

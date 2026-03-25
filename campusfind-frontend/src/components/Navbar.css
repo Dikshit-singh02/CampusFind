@@ -1,0 +1,99 @@
+/* Enhanced Navbar Styles - Glassmorphism & Gradient */
+
+.navbar-enhanced {
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease !important;
+}
+
+.navbar-enhanced.scrolled {
+  background: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.navbar-brand-enhanced {
+  font-size: 1.8rem !important;
+  font-weight: 800 !important;
+  background: linear-gradient(45deg, #667eea, #764ba2) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  text-shadow: none !important;
+  padding: 8px 16px !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+.navbar-brand-enhanced:hover {
+  transform: scale(1.05) !important;
+  background: linear-gradient(45deg, #5a67d8, #6b46c1) !important;
+}
+
+.nav-link-enhanced {
+  color: #555 !important;
+  font-weight: 500 !important;
+  padding: 12px 20px !important;
+  margin: 0 5px !important;
+  border-radius: 25px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.nav-link-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.5s !important;
+}
+
+.nav-link-enhanced:hover::before {
+  left: 100% !important;
+}
+
+.nav-link-enhanced:hover {
+  color: #667eea !important;
+  background: rgba(102, 126, 234, 0.1) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
+}
+
+.logout-btn-enhanced {
+  background: linear-gradient(45deg, #ff6b6b, #ee5a52) !important;
+  border: none !important;
+  border-radius: 25px !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
+  color: white !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3) !important;
+}
+
+.logout-btn-enhanced:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4) !important;
+  background: linear-gradient(45deg, #ff5252, #e53935) !important;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .ms-sidebar {
+    margin-left: 0 !important;
+  }
+  
+  .navbar-collapse {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 20px !important;
+    margin-top: 15px !important;
+    padding: 20px !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15) !important;
+  }
+}
