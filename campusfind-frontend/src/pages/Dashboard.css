@@ -1,10 +1,14 @@
 /* Dashboard Modern Glassmorphism Styles */
 
 .dashboard-root {
-  min-height: 100vh;
+  height: 100vh;
   background: var(--bg-primary);
-  padding: 2rem 0;
+  padding: 0;
+  margin: 0;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .dashboard-root::before {
@@ -21,7 +25,8 @@
 
 .dashboard-hero {
   text-align: center;
-  padding: 60px 20px;
+  padding: 40px 20px;
+  flex-shrink: 0;
   color: white;
   position: relative;
   z-index: 2;
@@ -29,15 +34,15 @@
 }
 
 .dashboard-hero h1 {
-  font-size: 3.5rem;
+  font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   text-shadow: 0 4px 20px rgba(0,0,0,0.3);
   color: var(--text-primary);
 }
 
 .dashboard-hero p {
-  font-size: 1.3rem;
+  font-size: clamp(1rem, 3vw, 1.2rem);
   opacity: 0.9;
   margin-bottom: 0;
 }
@@ -46,8 +51,11 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  flex: 1;
+  display: flex;
   position: relative;
   z-index: 2;
+  overflow: hidden;
 }
 
 .module-card {
@@ -59,11 +67,7 @@
   position: relative;
   height: 100%;
   transform-style: preserve-3d;
-  transition: transform 0.6s;
-}
-
-.module-card:hover .module-card-inner {
-  transform: rotateY(10deg) rotateX(10deg) scale(1.05);
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .card-glass {
@@ -72,7 +76,7 @@
   border-radius: 24px;
   box-shadow: var(--shadow-lg);
   height: 100%;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   overflow: hidden;
   position: relative;
 }
@@ -85,6 +89,7 @@
   right: 0;
   height: 4px;
   background: var(--primary-gradient);
+  transition: all 0.6s ease;
 }
 
 .card-glass:hover {
@@ -96,12 +101,16 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
+.card-glass:hover .module-card-inner {
+  transform: rotateY(8deg) rotateX(8deg) scale(1.03);
+}
+
 .icon-pulse {
-  font-size: 4rem !important;
+  font-size: clamp(2.5rem, 8vw, 3.5rem) !important;
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   animation: iconPulse 2s infinite;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
 }
 
 @keyframes iconPulse {
@@ -110,24 +119,24 @@
 }
 
 .card-title-dashboard {
-  font-size: 1.6rem;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .gradient-btn {
   background: var(--primary-gradient);
   border: none;
   border-radius: 50px;
-  padding: 14px 30px;
+  padding: 10px 24px;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
   color: white;
   text-decoration: none;
   display: inline-block;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(30, 64, 175, 0.4);
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 8px 24px rgba(30, 64, 175, 0.4);
   position: relative;
   overflow: hidden;
 }
