@@ -1,9 +1,12 @@
-# Dashboard Features TODO
+# NoticePage Premium UI TODO
 
 ## Plan:
-1. [ ] Add search state/filter in Dashboard.js
-2. [ ] Style search bar in Dashboard.css
-3. [ ] Add QR section with qrcode.react
-4. [ ] Test
+1. [ ] Polish NoticePage.css:
+   - Larger centered search bar (pill + purple glow)
+   - Modern dropdown glass effect
+   - Card hover (scale + shadow)
+   - Category badges (gradients: Lost=red, Event=blue, etc.)
+   - Filter animations (fade/opacity)
+2. [ ] Test responsive
 
-**Dependencies:** qrcode.react ✓ installed
+**Functionality already complete** (search/filter/clear/API/no-results)

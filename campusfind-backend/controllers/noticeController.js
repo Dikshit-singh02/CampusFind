@@ -33,6 +33,11 @@ const createNotice = async (req, res) => {
     });
     
     await notice.save();
+    
+    // Emit real-time update
+    const { emitNoticeUpdate } = require('../server');
+    emitNoticeUpdate();
+    
     res.status(201).json(notice);
   } catch (error) {
     res.status(500).json({ message: 'Server error: ' + error.message });
