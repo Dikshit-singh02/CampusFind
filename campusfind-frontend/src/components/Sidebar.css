@@ -1,17 +1,17 @@
 /* Enhanced Sidebar Styles - Matching Dashboard Theme */
 
 .sidebar-root {
-  width: 250px;
-  height: 100vh;
+  width: 280px;
+  height: calc(100vh - 80px);
   position: fixed;
   left: 0;
-  top: 56px;
+  top: 80px;
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-right: 1px solid var(--border-light);
   box-shadow: var(--shadow-md);
-  z-index: 1000;
+  z-index: 999;
   overflow-y: auto;
   transition: all 0.3s ease;
 }

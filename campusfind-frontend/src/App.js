@@ -19,12 +19,12 @@ import './App.css';
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   return token ? (
-    <div className="d-flex">
-      <Sidebar />
-      <div className="flex-grow-1 ms-sidebar" style={{marginLeft: '250px'}}>
-        {children}
-      </div>
-    </div>
+        <div className="d-flex">
+          <Sidebar />
+          <div className="flex-grow-1 ms-sidebar" style={{marginLeft: '280px'}}>
+            {children}
+          </div>
+        </div>
   ) : <Navigate to="/" />;
 };
 
@@ -44,12 +44,12 @@ const AdminRoute = ({ children }) => {
   }
   
   return (
-    <div className="d-flex">
-      <Sidebar />
-      <div className="flex-grow-1 ms-sidebar" style={{marginLeft: '250px'}}>
-        {children}
-      </div>
-    </div>
+        <div className="d-flex">
+          <Sidebar />
+          <div className="flex-grow-1 ms-sidebar" style={{marginLeft: '280px'}}>
+            {children}
+          </div>
+        </div>
   );
 };
 
