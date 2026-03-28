@@ -96,6 +96,29 @@
   box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3) !important;
 }
 
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(239,68,68,0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
 .logout-btn-enhanced:hover {
   transform: translateY(-3px) !important;
   box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4) !important;
