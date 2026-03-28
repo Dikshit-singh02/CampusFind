@@ -94,9 +94,9 @@ const Signup = () => {
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
-        <div className="text-center mt-4">
-          <Link to="/login" className="text-white text-decoration-none">Already have account? Login</Link>
-        </div>
+<div className="link-container text-center mt-4">
+  <Link to="/" className="login-link text-decoration-none">Already have account? <span className="fw-bold">Login</span></Link>
+</div>
       </div>
     </div>
   );
