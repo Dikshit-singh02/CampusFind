@@ -15,7 +15,6 @@ import SOSPage from './pages/SOSPage';
 import AdminPanel from './pages/AdminPanel';
 import './App.css';
 
-
 // Private Route component
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -59,57 +58,58 @@ function App() {
     <div className="app-container">
       <Router>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          } />
-          <Route path="/map" element={
-            <PrivateRoute>
-              <MapPage />
-            </PrivateRoute>
-          } />
-          <Route path="/lostfound" element={
-            <PrivateRoute>
-              <LostFoundPage />
-            </PrivateRoute>
-          } />
-          <Route path="/notices" element={
-            <PrivateRoute>
-              <NoticePage />
-            </PrivateRoute>
-          } />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/event/:id" element={<EventPage />} />
-          <Route path="/qr" element={
-            <PrivateRoute>
-              <QRGeneratorPage />
-            </PrivateRoute>
-          } />
-          <Route path="/qr-generator" element={
-            <PrivateRoute>
-              <QRGeneratorPage />
-            </PrivateRoute>
-          } />
-
-          <Route path="/sos" element={
-            <PrivateRoute>
-              <SOSPage />
-            </PrivateRoute>
-          } />
-          <Route path="/admin" element={
-            <AdminRoute>
-              <AdminPanel />
-            </AdminRoute>
-          } />
-          
-        </Routes>
+        <div style={{paddingTop: '80px'}}>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/dashboard" element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            } />
+            <Route path="/map" element={
+              <PrivateRoute>
+                <MapPage />
+              </PrivateRoute>
+            } />
+            <Route path="/lostfound" element={
+              <PrivateRoute>
+                <LostFoundPage />
+              </PrivateRoute>
+            } />
+            <Route path="/notices" element={
+              <PrivateRoute>
+                <NoticePage />
+              </PrivateRoute>
+            } />
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/event/:id" element={<EventPage />} />
+            <Route path="/qr" element={
+              <PrivateRoute>
+                <QRGeneratorPage />
+              </PrivateRoute>
+            } />
+            <Route path="/qr-generator" element={
+              <PrivateRoute>
+                <QRGeneratorPage />
+              </PrivateRoute>
+            } />
+            <Route path="/sos" element={
+              <PrivateRoute>
+                <SOSPage />
+              </PrivateRoute>
+            } />
+            <Route path="/admin" element={
+              <AdminRoute>
+                <AdminPanel />
+              </AdminRoute>
+            } />
+          </Routes>
+        </div>
       </Router>
     </div>
   );
 }
 
 export default App;
+

@@ -1,6 +1,11 @@
 /* Enhanced Navbar Styles - Glassmorphism & Gradient */
 
 .navbar-enhanced {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   background: var(--primary-dark) !important;
   backdrop-filter: blur(25px) !important;
   -webkit-backdrop-filter: blur(25px) !important;
