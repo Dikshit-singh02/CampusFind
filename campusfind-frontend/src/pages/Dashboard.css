@@ -11,15 +11,15 @@
 }
 
 .dashboard-container {
-  min-height: 100vh;
-  padding: 2rem;
+  min-height: calc(100vh - 70px);
+  padding: 1rem 2rem;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .dashboard-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin: 0.5rem 0 1rem 0;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -43,7 +43,8 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(260px, 280px));
   gap: 2rem;
-  margin-bottom: 3.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
@@ -120,16 +121,16 @@
   font-size: 1.5rem;
   font-weight: 600;
   color: #1e293b;
-  margin-bottom: 2rem;
+  margin: 1rem 0 2rem 0;
   text-align: center;
 }
 
 .features-row {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(380px, 1fr));
   grid-template-rows: repeat(2, 1fr);
-  gap: 2rem;
-  max-width: 800px;
+  gap: 3rem;
+  max-width: 1000px;
   margin: 0 auto;
   justify-content: center;
   align-items: start;
@@ -137,13 +138,13 @@
 
 .feature-card {
   background: white;
-  border-radius: 20px;
-  padding: 2.25rem;
+  border-radius: 24px;
+  padding: 3rem;
   text-align: center;
   text-decoration: none;
   color: inherit;
   height: 100%;
-  min-height: 260px;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -202,20 +203,22 @@
 }
 
 .simple-btn {
-  background: white;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 0.875rem 2.25rem;
-  font-weight: 600;
-  font-size: 0.925rem;
-  color: #475569;
+  background: var(--primary-gradient);
+  border: none;
+  border-radius: 14px;
+  padding: 1rem 2.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: white;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   text-decoration: none;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.075em;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 6px 20px rgba(79,70,229,0.3);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .simple-btn::before {
@@ -234,11 +237,8 @@
 }
 
 .simple-btn:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  transform: translateY(-2px);
-  color: #1e293b;
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 35px rgba(79,70,229,0.4);
 }
 
 .recent-activity {
