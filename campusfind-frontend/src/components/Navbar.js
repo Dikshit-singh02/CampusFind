@@ -8,17 +8,32 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      setUser(JSON.parse(userStr));
-    }
-
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+    const updateUser = () => {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          setUser(JSON.parse(userStr));
+        } catch {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    updateUser(); // Initial load
+
+    const handleStorageChange = (e) => {
+      if (e.key === 'user') updateUser();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('focus', updateUser);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('focus', updateUser);
+    };
   }, []);
 
   const handleLogout = () => {
