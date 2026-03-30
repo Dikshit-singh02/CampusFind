@@ -78,9 +78,31 @@
   background: var(--stat-color, #3b82f6);
 }
 
-.stat-card:hover {
-  transform: translateY(-4px);
+.stat-card.dashboard-card:hover {
+  transform: translateY(-8px) scale(1.02);
   box-shadow: var(--shadow-lg);
+}
+
+.stat-card, .dashboard-card {
+  cursor: pointer;
+  user-select: none;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.05);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+}
+
+.stat-card:hover::after {
+  opacity: 1;
 }
 
 .stat-icon {

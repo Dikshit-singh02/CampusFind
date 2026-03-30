@@ -1,14 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import DashboardCard from '../components/DashboardCard';
+import { getDashboardStats } from '../services/api.js';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const stats = [
-    { label: 'Lost Items', value: '23', change: '+4 today', icon: '📦', color: '#EF4444' },
-    { label: 'Found Items', value: '15', change: '+2 today', icon: '✅', color: '#10B981' },
-    { label: 'Active Notices', value: '5', change: 'New', icon: '📢', color: '#3B82F6' },
-    { label: 'SOS Alerts', value: '2', change: '+1 today', icon: '🚨', color: '#F59E0B' }
-  ];
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await getDashboardStats();
+        setStats({
+          lostItems: {
+            title: 'Lost Items',
+            count: data.lostItems.count,
+            todayCount: data.lostItems.today,
+            icon: '📦',
+            color: '#EF4444',
+            route: '/lostfound'
+          },
+          foundItems: {
+            title: 'Found Items',
+            count: data.foundItems.count,
+            todayCount: data.foundItems.today,
+            icon: '✅',
+            color: '#10B981',
+            route: '/lostfound'
+          },
+          notices: {
+            title: 'Active Notices',
+            count: data.notices.count,
+            todayCount: data.notices.today,
+            icon: '📢',
+            color: '#3B82F6',
+            route: '/notices'
+          },
+          sosAlerts: {
+            title: 'SOS Alerts',
+            count: data.sosAlerts.count,
+            todayCount: data.sosAlerts.today,
+            icon: '🚨',
+            color: '#F59E0B',
+            route: '/sos'
+          }
+        });
+      } catch (error) {
+        console.error('Failed to fetch dashboard stats:', error);
+        // Fallback mock data
+        setStats({
+          lostItems: { title: 'Lost Items', count: '23', todayCount: '+4', icon: '📦', color: '#EF4444', route: '/lostfound' },
+          foundItems: { title: 'Found Items', count: '15', todayCount: '+2', icon: '✅', color: '#10B981', route: '/lostfound' },
+          notices: { title: 'Active Notices', count: '5', todayCount: 'New', icon: '📢', color: '#3B82F6', route: '/notices' },
+          sosAlerts: { title: 'SOS Alerts', count: '2', todayCount: '+1', icon: '🚨', color: '#F59E0B', route: '/sos' }
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const features = [
     { name: 'Campus Map', path: '/map', icon: '🗺️', desc: 'Navigate campus' },
@@ -24,6 +79,26 @@ const Dashboard = () => {
     { time: 'Today', action: 'QR Scanner used 5 times' }
   ];
 
+  if (loading) {
+    return (
+      <div className="dashboard-container">
+        <header className="dashboard-header">
+          <h1>Dashboard</h1>
+          <p>Loading stats...</p>
+        </header>
+        <section className="stats-grid">
+          {Array(4).fill().map((_, index) => (
+            <div key={index} className="stat-card" style={{ height: '200px' }}>
+              <div style={{ width: '60px', height: '60px', background: '#e2e8f0', borderRadius: '16px', marginBottom: '1rem', animation: 'pulse 1.5s ease-in-out infinite' }}></div>
+              <div style={{ height: '48px', background: '#e2e8f0', borderRadius: '8px', marginBottom: '0.5rem', animation: 'pulse 1.5s ease-in-out infinite 0.2s' }}></div>
+              <div style={{ height: '16px', background: '#e2e8f0', borderRadius: '4px', animation: 'pulse 1.5s ease-in-out infinite 0.4s' }}></div>
+            </div>
+          ))}
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -33,16 +108,10 @@ const Dashboard = () => {
 
       {/* Stats Row */}
       <section className="stats-grid">
-        {stats.map((stat, index) => (
-          <div key={index} className="stat-card" style={{ '--stat-color': stat.color }}>
-            <div className="stat-icon">
-              {stat.icon}
-            </div>
-            <div className="stat-number">{stat.value}</div>
-            <div className="stat-label">{stat.label}</div>
-            <div className="stat-change">{stat.change}</div>
-          </div>
-        ))}
+        <DashboardCard {...stats.lostItems} />
+        <DashboardCard {...stats.foundItems} />
+        <DashboardCard {...stats.notices} />
+        <DashboardCard {...stats.sosAlerts} />
       </section>
 
       {/* Features 2x2 Grid */}

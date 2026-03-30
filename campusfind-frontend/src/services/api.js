@@ -128,4 +128,36 @@ export const createSOS = async (data) => {
   return api.post('/sos', data);
 };
 
+// Dashboard count APIs (mock data for demo - replace with real endpoints)
+export const getDashboardStats = async () => {
+  // Mock response - replace with real backend calls
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        lostItems: {
+          count: 23,
+          today: '+4'
+        },
+        foundItems: {
+          count: 15,
+          today: '+2'
+        },
+        notices: {
+          count: 5,
+          today: 'New'
+        },
+        sosAlerts: {
+          count: 2,
+          today: '+1'
+        }
+      });
+    }, 1000);
+  });
+};
+
+export const getLostItemsCount = async () => ({ count: 23, today: '+4' });
+export const getFoundItemsCount = async () => ({ count: 15, today: '+2' });
+export const getNoticesCount = async () => ({ count: 5, today: 'New' });
+export const getSOSCount = async () => ({ count: 2, today: '+1' });
+
 export default api;
