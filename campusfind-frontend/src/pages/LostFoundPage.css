@@ -35,9 +35,18 @@
   margin: 0 auto;
   position: relative;
   z-index: 2;
-  margin-left: 280px; /* Sidebar */
-  padding-left: 1rem; /* Reduce empty space */
+margin-left: 240px; /* Further reduced sidebar offset for tighter spacing (240px) */
+padding-left: 0;
 }
+
+/* Responsive */
+@media (max-width: 992px) {
+  .lf-container {
+    margin-left: 0;
+    padding-left: 1rem;
+  }
+}
+
 
 /* Responsive sidebar offset */
 @media (max-width: 992px) {
