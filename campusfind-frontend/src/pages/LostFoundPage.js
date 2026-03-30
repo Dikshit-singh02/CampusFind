@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getLostItems, createLostItem, getFoundItems, createFoundItem } from '../services/api';
+import { getLostItems, createLostItem, getFoundItems, createFoundItem, updateItemStatus } from '../services/api';
 import './LostFoundPage.css';
 
 const LostFoundPage = () => {
@@ -19,6 +19,13 @@ const LostFoundPage = () => {
     location: '',
     contactInfo: ''
   });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState('All');
+  const [filterType, setFilterType] = useState('All');
+  const [sortBy, setSortBy] = useState('newest');
+  const [activeTab, setActiveTab] = useState('browse');
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -34,12 +41,11 @@ const LostFoundPage = () => {
         getLostItems(),
         getFoundItems()
       ]);
-      setLostItems(lostResponse.data);
-      setFoundItems(foundResponse.data);
+      setLostItems(lostResponse.data || []);
+      setFoundItems(foundResponse.data || []);
       setLoading(false);
     } catch (err) {
-      console.error('Error fetching items:', err);
-      setError('Failed to load items: ' + err.message);
+      setError('Failed to load items');
       setLoading(false);
     }
   };
@@ -74,47 +80,28 @@ const LostFoundPage = () => {
 
   const handleLostSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccessMessage('');
-    
-    console.log('=== Submitting Lost Item ===');
-    console.log('Form data:', lostFormData);
-    
     try {
-      const response = await createLostItem(lostFormData);
-      console.log('Success! Response:', response);
-      setSuccessMessage('Lost item reported successfully!');
+      await createLostItem(lostFormData);
+      setSuccessMessage('Lost item reported!');
       setLostFormData({ title: '', description: '', image: '', location: '', contactInfo: '' });
       fetchItems();
     } catch (err) {
-      console.error('Error creating lost item:', err);
-      console.error('Error details:', err.response?.data || err.message);
-      setError('Failed to report lost item: ' + (err.response?.data?.message || err.message));
+      setError('Failed to report lost item');
     }
   };
 
   const handleFoundSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccessMessage('');
-    
-    console.log('=== Submitting Found Item ===');
-    console.log('Form data:', foundFormData);
-    
     try {
-      const response = await createFoundItem(foundFormData);
-      console.log('Success! Response:', response);
-      setSuccessMessage('Found item reported successfully!');
+      await createFoundItem(foundFormData);
+      setSuccessMessage('Found item reported!');
       setFoundFormData({ title: '', description: '', image: '', location: '', contactInfo: '' });
       fetchItems();
     } catch (err) {
-      console.error('Error creating found item:', err);
-      console.error('Error details:', err.response?.data || err.message);
-      setError('Failed to report found item: ' + (err.response?.data?.message || err.message));
+      setError('Failed to report found item');
     }
   };
 
-  // Get status badge color
   const getStatusBadgeColor = (status) => {
     switch (status) {
       case 'Available':
@@ -128,11 +115,88 @@ const LostFoundPage = () => {
     }
   };
 
-  // Copy QR code to clipboard
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    alert('QR Code copied to clipboard!');
+    alert('QR copied!');
   };
+
+  const claimItem = async (item) => {
+    // eslint-disable-next-line no-alert
+    if (!window.confirm('Claim this item?')) return;
+    try {
+      await updateItemStatus(item._id, { status: 'Claimed' });
+      setSuccessMessage('Claimed!');
+      fetchItems();
+    } catch (err) {
+      setError('Claim failed');
+    }
+  };
+
+
+  const openImageModal = (image) => {
+    setSelectedImage(image);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedImage(null);
+  };
+
+  const filteredLostItems = lostItems.filter(item => 
+    (!searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase())) &&
+    (filterStatus === 'All' || item.status === filterStatus)
+  );
+
+  const filteredFoundItems = foundItems.filter(item => 
+    (!searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase())) &&
+    (filterStatus === 'All' || item.status === filterStatus)
+  );
+
+  const renderItem = (item, type) => (
+    <div className="lf-list-group-item" key={item._id}>
+      <div>
+        <h6>{item.title}</h6>
+        <span className={`badge ${getStatusBadgeColor(item.status)}`}>
+          {item.status || 'Available'}
+        </span>
+        <p>{item.description}</p>
+        <small>{item.location} | {item.contactInfo}</small>
+        {item.image && (
+          <img 
+            src={item.image} 
+            alt={item.title}
+            className="lf-img"
+            onClick={() => openImageModal(item.image)}
+            style={{cursor: 'pointer', maxHeight: '100px'}}
+          />
+        )}
+      </div>
+      <div>
+        {item.qrCode && (
+          <button className="lf-qr-btn me-2" onClick={() => copyToClipboard(item.qrCode)}>
+            QR
+          </button>
+        )}
+        {type === 'found' && item.status === 'Available' && (
+          <button className="btn btn-primary btn-sm" onClick={() => claimItem(item)}>
+            Claim
+          </button>
+        )}
+      </div>
+    </div>
+  );
+
+  if (showModal) {
+    return (
+      <div className="modal-backdrop" onClick={closeModal}>
+        <div className="lf-modal" onClick={(e) => e.stopPropagation()}>
+          <img src={selectedImage} alt="Item" />
+          <button onClick={closeModal}>Close</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="lf-page-root">
@@ -140,171 +204,141 @@ const LostFoundPage = () => {
         <h2 className="lf-title mb-4">Lost & Found</h2>
         
         {error && (
-          <div className="lf-alert lf-alert-danger alert-dismissible">
+          <div className="lf-alert lf-alert-danger mb-4">
             {error}
-            <button type="button" className="close" onClick={() => setError('')}>
-              <span>&times;</span>
-            </button>
           </div>
         )}
         
         {successMessage && (
-          <div className="lf-alert lf-alert-success alert-dismissible">
+          <div className="lf-alert lf-alert-success mb-4">
             {successMessage}
-            <button type="button" className="close" onClick={() => setSuccessMessage('')}>
-              <span>&times;</span>
-            </button>
           </div>
         )}
-        
-        {loading ? (
-          <div className="text-center">
-            <div className="spinner-border lf-spinner" role="status">
-              <span className="sr-only">Loading...</span>
-            </div>
-          </div>
-        ) : (
-          <div className="row">
-            {/* Report Lost Item Form */}
-            <div className="col-md-6 mb-4">
+
+        <div className="lf-tabs mb-4">
+          <button 
+            className={`lf-tab-btn ${activeTab === 'report' ? 'active' : ''}`}
+            onClick={() => setActiveTab('report')}
+          >
+            Report Item
+          </button>
+          <button 
+            className={`lf-tab-btn ${activeTab === 'browse' ? 'active' : ''}`}
+            onClick={() => setActiveTab('browse')}
+          >
+            Browse Items
+          </button>
+        </div>
+
+        {loading && <div className="text-center p-5"><div className="spinner-border lf-spinner" /></div>}
+
+        {activeTab === 'report' && (
+          <div className="row mb-5">
+            <div className="col-md-6">
               <div className="lf-card-glass">
                 <div className="lf-card-header-lost">
-                  <h5 className="mb-0">Report Lost Item</h5>
+                  Report Lost Item
                 </div>
-                <div className="card-body">
+                <div className="p-4">
                   <form onSubmit={handleLostSubmit}>
-                    <div className="lf-form-group">
-                      <label>Title *</label>
+                    <div className="mb-3">
                       <input
                         type="text"
-                        className="lf-form-control"
+                        className="lf-form-control mb-3"
                         name="title"
                         value={lostFormData.title}
                         onChange={handleLostChange}
+                        placeholder="Title"
                         required
-                        placeholder="What did you lose?"
                       />
-                    </div>
-                    <div className="lf-form-group">
-                      <label>Description *</label>
                       <textarea
-                        className="lf-form-control"
+                        className="lf-form-control mb-3"
                         name="description"
                         value={lostFormData.description}
                         onChange={handleLostChange}
-                        required
-                        placeholder="Describe the item in detail"
+                        placeholder="Description"
                         rows="3"
                       />
-                    </div>
-                    <div className="lf-form-group">
-                      <label>Location *</label>
                       <input
                         type="text"
-                        className="lf-form-control"
+                        className="lf-form-control mb-3"
                         name="location"
                         value={lostFormData.location}
                         onChange={handleLostChange}
-                        required
-                        placeholder="Where did you lose it?"
+                        placeholder="Location"
                       />
-                    </div>
-                    <div className="lf-form-group">
-                      <label>Contact Info</label>
                       <input
                         type="text"
-                        className="lf-form-control"
+                        className="lf-form-control mb-3"
                         name="contactInfo"
                         value={lostFormData.contactInfo}
                         onChange={handleLostChange}
-                        placeholder="Phone number or email"
+                        placeholder="Contact"
                       />
-                    </div>
-                    <div className="lf-form-group">
-                      <label>Image (optional)</label>
                       <input
                         type="file"
                         className="lf-form-control"
-                        name="image"
                         accept="image/*"
                         onChange={(e) => handleImageChange(e, setLostFormData, lostFormData)}
                       />
                     </div>
-                    <button type="submit" className="lf-btn-lost">
-                      Report Lost Item
+                    <button type="submit" className="lf-btn-lost w-100">
+                      Report Lost
                     </button>
                   </form>
                 </div>
               </div>
             </div>
-
-            {/* Report Found Item Form */}
-            <div className="col-md-6 mb-4">
+            <div className="col-md-6">
               <div className="lf-card-glass">
                 <div className="lf-card-header-found">
-                  <h5 className="mb-0">Report Found Item</h5>
+                  Report Found Item
                 </div>
-                <div className="card-body">
+                <div className="p-4">
                   <form onSubmit={handleFoundSubmit}>
-                    <div className="lf-form-group">
-                      <label>Title *</label>
+                    <div className="mb-3">
                       <input
                         type="text"
-                        className="lf-form-control"
+                        className="lf-form-control mb-3"
                         name="title"
                         value={foundFormData.title}
                         onChange={handleFoundChange}
+                        placeholder="Title"
                         required
-                        placeholder="What did you find?"
                       />
-                    </div>
-                    <div className="lf-form-group">
-                      <label>Description *</label>
                       <textarea
-                        className="lf-form-control"
+                        className="lf-form-control mb-3"
                         name="description"
                         value={foundFormData.description}
                         onChange={handleFoundChange}
-                        required
-                        placeholder="Describe the item in detail"
+                        placeholder="Description"
                         rows="3"
                       />
-                    </div>
-                    <div className="lf-form-group">
-                      <label>Location *</label>
                       <input
                         type="text"
-                        className="lf-form-control"
+                        className="lf-form-control mb-3"
                         name="location"
                         value={foundFormData.location}
                         onChange={handleFoundChange}
-                        required
-                        placeholder="Where did you find it?"
+                        placeholder="Location"
                       />
-                    </div>
-                    <div className="lf-form-group">
-                      <label>Contact Info</label>
                       <input
                         type="text"
-                        className="lf-form-control"
+                        className="lf-form-control mb-3"
                         name="contactInfo"
                         value={foundFormData.contactInfo}
                         onChange={handleFoundChange}
-                        placeholder="Phone number or email"
+                        placeholder="Contact"
                       />
-                    </div>
-                    <div className="lf-form-group">
-                      <label>Image (optional)</label>
                       <input
                         type="file"
                         className="lf-form-control"
-                        name="image"
                         accept="image/*"
                         onChange={(e) => handleImageChange(e, setFoundFormData, foundFormData)}
                       />
                     </div>
-                    <button type="submit" className="lf-btn-found">
-                      Report Found Item
+                    <button type="submit" className="lf-btn-found w-100">
+                      Report Found
                     </button>
                   </form>
                 </div>
@@ -313,131 +347,64 @@ const LostFoundPage = () => {
           </div>
         )}
 
-        {/* Lost Items List */}
-        <div className="row mt-4">
-          <div className="col-md-6">
-            <div className="lf-card-glass">
-              <div className="lf-card-header-list-lost d-flex justify-content-between align-items-center">
-                <h5 className="mb-0">Lost Items ({lostItems.length})</h5>
+        {activeTab === 'browse' && (
+          <div>
+            <div className="row mb-4">
+              <div className="col-md-3">
+                <input
+                  type="text"
+                  className="lf-form-control"
+                  placeholder="🔍 Search items"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
-              <div className="card-body lf-scrollable">
-                {lostItems.length === 0 ? (
-                  <p className="text-muted text-center">No lost items reported yet.</p>
-                ) : (
-                  <ul className="lf-list-group">
-                    {lostItems.map((item) => (
-                      <li key={item._id} className="lf-list-group-item">
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                          <div>
-                            <h6 className="mb-1">{item.title}</h6>
-                            <span className={`badge ${getStatusBadgeColor(item.status)}`}>
-                              {item.status || 'Available'}
-                            </span>
-                          </div>
-                          {item.qrCode && (
-                            <button 
-                              className="lf-qr-btn"
-                              onClick={() => copyToClipboard(item.qrCode)}
-                              title="Copy QR Code"
-                            >
-                              📋 QR
-                            </button>
-                          )}
-                        </div>
-                        <p className="mb-1">{item.description}</p>
-                        <small className="text-muted">
-                          <strong>Location:</strong> {item.location}<br />
-                          {item.contactInfo && (
-                            <span><strong>Contact:</strong> {item.contactInfo}<br /></span>
-                          )}
-                          {item.qrCode && (
-                            <span><strong>QR Code:</strong> {item.qrCode}<br /></span>
-                          )}
-                          {item.createdAt && (
-                            <span>Reported on: {new Date(item.createdAt).toLocaleDateString()}</span>
-                          )}
-                        </small>
-                        {item.image && (
-                          <div className="mt-2">
-                            <img 
-                              src={item.image} 
-                              alt={item.title} 
-                              className="lf-img"
-                              style={{ maxWidth: '100%', maxHeight: '150px', borderRadius: '5px' }}
-                              onError={(e) => { e.target.style.display = 'none'; }}
-                            />
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+              <div className="col-md-2">
+                <select className="lf-form-control" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+                  <option>All Status</option>
+                  <option>Available</option>
+                  <option>Claimed</option>
+                </select>
+              </div>
+              <div className="col-md-2">
+                <select className="lf-form-control" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+                  <option>All Types</option>
+                  <option>Lost</option>
+                  <option>Found</option>
+                </select>
+              </div>
+              <div className="col-md-2">
+                <select className="lf-form-control" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                  <option>Newest</option>
+                  <option>Oldest</option>
+                </select>
               </div>
             </div>
-          </div>
 
-          {/* Found Items List */}
-          <div className="col-md-6">
-            <div className="lf-card-glass">
-              <div className="lf-card-header-list-found d-flex justify-content-between align-items-center">
-                <h5 className="mb-0">Found Items ({foundItems.length})</h5>
+            <div className="row">
+              <div className="col-md-6 mb-4">
+                <div className="lf-card-glass h-100">
+                  <div className="lf-card-header-list-lost">
+                    Lost Items ({filteredLostItems.length})
+                  </div>
+                  <div className="card-body lf-scrollable">
+                    {filteredLostItems.map(item => renderItem(item, 'lost'))}
+                  </div>
+                </div>
               </div>
-              <div className="card-body lf-scrollable">
-                {foundItems.length === 0 ? (
-                  <p className="text-muted text-center">No found items reported yet.</p>
-                ) : (
-                  <ul className="lf-list-group">
-                    {foundItems.map((item) => (
-                      <li key={item._id} className="lf-list-group-item">
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                          <div>
-                            <h6 className="mb-1">{item.title}</h6>
-                            <span className={`badge ${getStatusBadgeColor(item.claimStatus || item.status)}`}>
-                              {item.claimStatus || item.status || 'Available'}
-                            </span>
-                          </div>
-                          {item.qrCode && (
-                            <button 
-                              className="lf-qr-btn"
-                              onClick={() => copyToClipboard(item.qrCode)}
-                              title="Copy QR Code"
-                            >
-                              📋 QR
-                            </button>
-                          )}
-                        </div>
-                        <p className="mb-1">{item.description}</p>
-                        <small className="text-muted">
-                          <strong>Location:</strong> {item.location}<br />
-                          {item.contactInfo && (
-                            <span><strong>Contact:</strong> {item.contactInfo}<br /></span>
-                          )}
-                          {item.qrCode && (
-                            <span><strong>QR Code:</strong> {item.qrCode}<br /></span>
-                          )}
-                          {item.createdAt && (
-                            <span>Reported on: {new Date(item.createdAt).toLocaleDateString()}</span>
-                          )}
-                        </small>
-                        {item.image && (
-                          <div className="mt-2">
-                            <img 
-                              src={item.image} 
-                              alt={item.title} 
-                              className="lf-img"
-                              style={{ maxWidth: '100%', maxHeight: '150px', borderRadius: '5px' }}
-                              onError={(e) => { e.target.style.display = 'none'; }}
-                            />
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+              <div className="col-md-6 mb-4">
+                <div className="lf-card-glass h-100">
+                  <div className="lf-card-header-list-found">
+                    Found Items ({filteredFoundItems.length})
+                  </div>
+                  <div className="card-body lf-scrollable">
+                    {filteredFoundItems.map(item => renderItem(item, 'found'))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
