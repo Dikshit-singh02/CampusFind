@@ -2,10 +2,10 @@
 
 .map-page-root {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-primary);
   padding: 20px;
   position: relative;
-  overflow: hidden;
+  font-family: 'Inter', sans-serif;
 }
 
 .map-page-root::before {
@@ -30,16 +30,19 @@
 .map-hero {
   text-align: center;
   padding: 40px 20px;
+  background: var(--primary-dark);
+  border-radius: 20px;
   color: white;
   animation: fadeInDown 1s ease-out;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow-xl);
 }
 
 .map-hero h1 {
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 10px;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  background: linear-gradient(45deg, #fff, #f0f0f0);
+  background: linear-gradient(135deg, var(--text-primary), var(--primary-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -52,17 +55,14 @@
 }
 
 .map-card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 24px;
-  box-shadow: 
-    0 25px 45px rgba(0,0,0,0.1),
-    0 0 0 1px rgba(255,255,255,0.05),
-    inset 0 1px 0 rgba(255,255,255,0.5);
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  box-shadow: var(--shadow-xl);
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.3s ease;
   position: relative;
 }
 
@@ -72,21 +72,19 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
-  background-size: 300% 300%;
-  animation: gradientShift 3s ease infinite;
+  height: 4px;
+  background: var(--primary-color);
   z-index: 2;
 }
 
 .map-card-header {
   padding: 25px;
-  background: rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: white;
+  color: var(--text-primary);
 }
 
 .map-card-title {
@@ -102,17 +100,17 @@
 }
 
 .fullscreen-btn {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: var(--primary-color);
   border: none;
-  border-radius: 50px;
+  border-radius: 12px;
   padding: 12px 20px;
   color: white;
   font-weight: 600;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-md);
   position: relative;
-  overflow: hidden;
 }
 
 .fullscreen-btn:hover {
@@ -131,8 +129,12 @@
   transition: left 0.5s;
 }
 
-.fullscreen-btn:hover::before {
-  left: 100%;
+.fullscreen-btn:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.fullscreen-btn::before {
+  content: none;
 }
 
 .map-wrapper {
@@ -159,7 +161,8 @@
 
 .legend-section {
   padding: 25px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-light);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
@@ -170,14 +173,16 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  transition: all 0.3s ease;
+  background: var(--glass-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  transition: all 0.2s ease;
 }
 
 .legend-item:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--glass-bg);
   transform: translateX(5px);
+  box-shadow: var(--shadow-md);
 }
 
 .legend-icon {
