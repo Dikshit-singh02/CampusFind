@@ -1,10 +1,15 @@
 import React, { useState, useRef } from 'react';
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
 import './MapPage.css';
 
 const MapPage = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedBuilding, setSelectedBuilding] = useState(null);
+  const [activeBuilding, setActiveBuilding] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
+  const [showDirections, setShowDirections] = useState(false);
+  const [directions, setDirections] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const mapRef = useRef(null);
 
@@ -30,10 +35,65 @@ const MapPage = () => {
     setIsFullscreen(!isFullscreen);
   };
 
+  const handleCardClick = (building) => {
+    setActiveBuilding(building);
+    setSelectedBuilding(building);
+    mapRef.current?.panTo(building.position);
+    mapRef.current?.setZoom(18);
+  };
+
+  const getCurrentLocation = () => {
+    setLoading(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setUserLocation(pos);
+          setActiveBuilding(null);
+          mapRef.current?.panTo(pos);
+          mapRef.current?.setZoom(16);
+          setLoading(false);
+        },
+        () => {
+          alert('Failed to get location');
+          setLoading(false);
+        }
+      );
+    }
+  };
+
+  const calculateDirections = () => {
+    if (!userLocation || !activeBuilding) {
+      alert('Select your location and a destination first');
+      return;
+    }
+
+    setLoading(true);
+    const directionsService = new window.google.maps.DirectionsService();
+    directionsService.route(
+      {
+        origin: new window.google.maps.LatLng(userLocation.lat, userLocation.lng),
+        destination: new window.google.maps.LatLng(activeBuilding.position.lat, activeBuilding.position.lng),
+        travelMode: window.google.maps.TravelMode.WALKING,
+      },
+      (response, status) => {
+        if (status === 'OK') {
+          setDirections(response);
+          setShowDirections(true);
+        }
+        setLoading(false);
+      }
+    );
+  };
+
   const mapContainerStyle = {
     height: isFullscreen ? '100%' : '600px',
     width: '100%',
   };
+
 
   return (
     <div className="map-page-root">
@@ -46,22 +106,22 @@ const MapPage = () => {
         <div className={`map-card ${isFullscreen ? 'fullscreen' : ''}`}>
           <div className="map-card-header">
             <h3 className="map-card-title">Chandigarh University Campus</h3>
-            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+            <div className="map-controls">
               <input
                 type="text"
                 placeholder="Search buildings..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  padding: '12px 16px',
-                  border: '1px solid var(--border-light)',
-                  borderRadius: '12px',
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '14px',
-                  background: 'var(--glass-bg)',
-                  minWidth: '250px'
-                }}
+                className="search-input"
               />
+              <button className="map-btn primary" onClick={getCurrentLocation} disabled={loading}>
+                {loading ? 'Loading...' : 'My Location'}
+              </button>
+              {userLocation && activeBuilding && (
+                <button className="map-btn secondary" onClick={calculateDirections} disabled={loading}>
+                  Directions
+                </button>
+              )}
               <button className="fullscreen-btn" onClick={toggleFullscreen}>
                 {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
               </button>
