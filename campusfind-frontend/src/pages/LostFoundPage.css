@@ -35,7 +35,7 @@
   margin: 0 auto;
   position: relative;
   z-index: 2;
-  margin-left: 220px; /* Further reduced sidebar offset for tighter spacing (220px) */
+  margin-left: 120px; /* Further reduced sidebar offset for tighter spacing (220px) */
   padding-left: 0;
 }
 
