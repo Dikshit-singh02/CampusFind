@@ -1,4 +1,4 @@
-/* Professional Lost & Found Page Styling - Enhanced Glassmorphism 2024 */
+/* Professional Lost & Found Page Styling - Enhanced Glassmorphism 2024 - FIXED SYNTAX */
 
 * {
   margin: 0;
@@ -35,8 +35,8 @@
   margin: 0 auto;
   position: relative;
   z-index: 2;
-margin-left: 240px; /* Further reduced sidebar offset for tighter spacing (240px) */
-padding-left: 0;
+  margin-left: 220px; /* Further reduced sidebar offset for tighter spacing (220px) */
+  padding-left: 0;
 }
 
 /* Responsive */
@@ -46,16 +46,6 @@ padding-left: 0;
     padding-left: 1rem;
   }
 }
-
-
-/* Responsive sidebar offset */
-@media (max-width: 992px) {
-  .lf-container {
-    margin-left: 0;
-    padding-left: 1rem;
-  }
-}
-
 
 /* Typography */
 .lf-title {
@@ -291,6 +281,23 @@ padding-left: 0;
 .lf-list-group-item small {
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
+}
+
+/* Item Images */
+.lf-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-top: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lf-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
 }
 
 /* Badges */
