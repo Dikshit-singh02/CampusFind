@@ -19,6 +19,9 @@ const MapPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [fullscreen, setFullscreen] = useState(false);
   const [activeBuilding, setActiveBuilding] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState(null);
 
   const buildings = [
     { name: 'CSE Block', position: [30.7465, 76.8040], type: 'building-cse' },
@@ -32,6 +35,39 @@ const MapPage = () => {
   const filteredBuildings = buildings.filter(building =>
     building.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const fetchNominatim = async (query) => {
+    if (query.length < 2) {
+      setSearchResults([]);
+      setShowResults(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ' Chandigarh University')}&limit=5&addressdetails=1&viewbox=76.78,30.73,76.81,30.75&bounded=1`
+      );
+      const data = await response.json();
+      setSearchResults(data);
+      setShowResults(true);
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    }
+  };
+
+  const debouncedSearch = (query) => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+    const timeout = setTimeout(() => fetchNominatim(query), 300);
+    setSearchTimeout(timeout);
+  };
+
+  const handleSearchResultClick = (result) => {
+    const [lat, lon] = [parseFloat(result.lat), parseFloat(result.lon)];
+    setSelectedLocation([lat, lon]);
+    setSearchQuery(result.display_name.split(',')[0]);
+    setShowResults(false);
+  };
 
   const getCurrentLocation = () => {
     setLoading(true);
@@ -72,11 +108,25 @@ const MapPage = () => {
             <div className="map-controls">
               <input
                 type="text"
-                placeholder="Search buildings..."
+                placeholder="Search places in CU..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  debouncedSearch(e.target.value);
+                }}
                 className="search-input"
               />
+              {showResults && searchResults.length > 0 && (
+                <div className="search-dropdown">
+                  {searchResults.map((result, index) => (
+                    <div key={index} className="search-result-item" onClick={() => handleSearchResultClick(result)}>
+                      <strong>{result.display_name.split(',')[0]}</strong>
+                      <br />
+                      <small>{result.display_name}</small>
+                    </div>
+                  ))}
+                </div>
+              )}
               <button className="map-btn primary" onClick={getCurrentLocation} disabled={loading}>
                 {loading ? 'Loading...' : 'My Location'}
               </button>

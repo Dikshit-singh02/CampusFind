@@ -17,4 +17,10 @@
 - ✅ Hover/active animations
 - ✅ Responsive design preserved
 
-MapPage now fully enhanced! Ready for production use.
+**Dynamic Nominatim search added!**
+- Debounced OSM Nominatim API search for "query Chandigarh University"
+- Dropdown suggestions with click to zoom/marker
+- Bounded to CU area for relevant results
+- Smooth integration with existing features
+
+MapPage complete with dynamic search! 🎉
