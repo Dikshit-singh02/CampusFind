@@ -99,7 +99,20 @@ export const deleteFoundItem = async (id) => {
   return api.delete(`/lostfound/admin/found/${id}`);
 };
 
-// Notifications API
+// Notices API (fixed endpoint)
+export const getNotices = async (status = 'All') => {
+  let queryString = '';
+  if (status && status !== 'All') {
+    queryString = `?status=${encodeURIComponent(status)}`;
+  }
+  return api.get(`/notices${queryString}`);
+};
+
+export const createNotice = async (data) => {
+  return api.post('/notices', data);
+};
+
+// Legacy notifications (kept for compatibility)
 export const getNotifications = async (type, status) => {
   let queryString = '';
   if (type || (status && status !== 'All')) {
