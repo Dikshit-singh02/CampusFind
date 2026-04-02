@@ -248,7 +248,16 @@ const NoticePage = () => {
                         </div>
                       )}
                       {selectedNotice.itemDetails.image && (
-                        <img src={selectedNotice.itemDetails.image} alt="Item" className="np-item-img mt-2" />
+                        <div className="text-center">
+                          <img 
+                            src={selectedNotice.itemDetails.image} 
+                            alt="Item" 
+                            className="np-item-img-modal" 
+                            style={{cursor: 'pointer'}}
+                            onClick={() => window.open(selectedNotice.itemDetails.image, '_blank')}
+                          />
+                          <small className="text-muted d-block mt-1">Click to view full size</small>
+                        </div>
                       )}
                     </div>
                   )}
