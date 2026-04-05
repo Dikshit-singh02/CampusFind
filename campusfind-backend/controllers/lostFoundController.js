@@ -26,9 +26,9 @@ const createLostItem = async (req, res) => {
       location,
       contactInfo,
       userId: req.user ? req.user.id : null,
-      qrCode: `LOST-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       status: 'Available',
     });
+
     
     const savedItem = await lostItem.save();
     console.log('Lost item saved successfully:', savedItem);
@@ -112,9 +112,9 @@ const createFoundItem = async (req, res) => {
       contactInfo,
       userId: req.user ? req.user.id : null,
       status: 'found',
-      qrCode: `FOUND-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       claimStatus: 'Available',
     });
+
     
     const savedItem = await foundItem.save();
     
@@ -174,80 +174,7 @@ const deleteFoundItem = async (req, res) => {
   }
 };
 
-// ========== QR & Status (existing) ==========
-const getItemByQRCode = async (req, res) => {
-  try {
-    const { qrCode } = req.params;
-    
-    // Search in LostItems first
-    let item = await LostItem.findOne({ qrCode }).populate('userId', 'name email');
-    let itemType = 'lost';
-    
-    // If not found, search in FoundItems
-    if (!item) {
-      item = await FoundItem.findOne({ qrCode }).populate('userId', 'name email');
-      itemType = 'found';
-    }
-    
-    if (!item) {
-      return res.status(404).json({ message: 'Item not found with this QR code' });
-    }
-    
-    res.json({
-      ...item.toObject(),
-      itemType,
-    });
-  } catch (error) {
-    console.error('Error fetching item by QR code:', error);
-    res.status(500).json({ message: 'Server error: ' + error.message });
-  }
-};
 
-const updateItemStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status, claimedBy } = req.body;
-    
-    // Try to find in LostItems
-    let item = await LostItem.findById(id);
-    let itemType = 'lost';
-    
-    // If not found, try FoundItems
-    if (!item) {
-      item = await FoundItem.findById(id);
-      itemType = 'found';
-    }
-    
-    if (!item) {
-      return res.status(404).json({ message: 'Item not found' });
-    }
-    
-    // Update status
-    if (status) {
-      if (itemType === 'lost') {
-        item.status = status;
-      } else {
-        item.claimStatus = status;
-      }
-    }
-    
-    // If claiming, record claimant info
-    if (claimedBy) {
-      item.claimedBy = claimedBy;
-      item.claimedAt = new Date();
-    }
-    
-    await item.save();
-    
-    res.json({
-      message: 'Item status updated successfully',
-      item,
-    });
-  } catch (error) {
-    console.error('Error updating item status:', error);
-    res.status(500).json({ message: 'Server error: ' + error.message });
-  }
-};
 
 module.exports = { 
   getLostItems, createLostItem, getLostItemById, updateLostItem, deleteLostItem,

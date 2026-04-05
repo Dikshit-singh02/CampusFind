@@ -3,9 +3,9 @@ const admin = require('../middleware/admin');
 const auth = require('../middleware/auth');
 const { 
   getLostItems, createLostItem, getLostItemById, updateLostItem, deleteLostItem,
-  getFoundItems, createFoundItem, getFoundItemById, updateFoundItem, deleteFoundItem,
-  getItemByQRCode, updateItemStatus
+  getFoundItems, createFoundItem, getFoundItemById, updateFoundItem, deleteFoundItem
 } = require('../controllers/lostFoundController');
+
 const router = express.Router();
 
 // Public/User Routes (no auth needed for GET)
@@ -15,9 +15,7 @@ router.post('/lost', auth, createLostItem);
 router.get('/found', getFoundItems);
 router.post('/found', auth, createFoundItem);
 
-// QR Code endpoints (public)
-router.get('/qr/:qrCode', getItemByQRCode);
-router.put('/status/:id', auth, updateItemStatus);
+
 
 // ========== ADMIN ROUTES ==========
 router.get('/admin/lost/:id', admin, getLostItemById);

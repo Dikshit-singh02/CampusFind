@@ -16,12 +16,7 @@ const lostItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // QR Code field - unique identifier for QR scanning
-  qrCode: {
-    type: String,
-    unique: true,
-    sparse: true,
-  },
+
   // Status for claim verification
   status: {
     type: String,
@@ -49,12 +44,6 @@ const lostItemSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Auto-generate QR code before saving
-lostItemSchema.pre('save', function(next) {
-  if (!this.qrCode) {
-    this.qrCode = `LOST-${this._id.toString()}-${Date.now()}`;
-  }
-  next();
-});
+
 
 module.exports = mongoose.model('LostItem', lostItemSchema);

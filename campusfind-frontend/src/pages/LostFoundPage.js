@@ -115,10 +115,7 @@ const LostFoundPage = () => {
     }
   };
 
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-    alert('QR copied!');
-  };
+
 
   const claimItem = async (item) => {
     // eslint-disable-next-line no-alert
@@ -173,11 +170,7 @@ const LostFoundPage = () => {
         )}
       </div>
       <div>
-        {item.qrCode && (
-          <button className="lf-qr-btn me-2" onClick={() => copyToClipboard(item.qrCode)}>
-            QR
-          </button>
-        )}
+
         {type === 'found' && item.status === 'Available' && (
           <button className="btn btn-primary btn-sm" onClick={() => claimItem(item)}>
             Claim

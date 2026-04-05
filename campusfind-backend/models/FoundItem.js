@@ -22,12 +22,7 @@ const foundItemSchema = new mongoose.Schema({
     enum: ['lost', 'found'],
     default: 'found',
   },
-  // QR Code field - unique identifier for QR scanning
-  qrCode: {
-    type: String,
-    unique: true,
-    sparse: true,
-  },
+
   // Status for claim verification (Available/Claimed/Returned)
   claimStatus: {
     type: String,
@@ -55,12 +50,6 @@ const foundItemSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Auto-generate QR code before saving
-foundItemSchema.pre('save', function(next) {
-  if (!this.qrCode) {
-    this.qrCode = `FOUND-${this._id.toString()}-${Date.now()}`;
-  }
-  next();
-});
+
 
 module.exports = mongoose.model('FoundItem', foundItemSchema);
