@@ -178,6 +178,5 @@ const deleteFoundItem = async (req, res) => {
 
 module.exports = { 
   getLostItems, createLostItem, getLostItemById, updateLostItem, deleteLostItem,
-  getFoundItems, createFoundItem, getFoundItemById, updateFoundItem, deleteFoundItem,
-  getItemByQRCode, updateItemStatus
+  getFoundItems, createFoundItem, getFoundItemById, updateFoundItem, deleteFoundItem
 };
