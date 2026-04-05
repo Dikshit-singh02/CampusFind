@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getNotices } from '../services/api';
-import './NoticePage.css';
+import './NoticePage-dark-corporate.css';
 
 const NoticePage = () => {
   const [notices, setNotices] = useState([]);
