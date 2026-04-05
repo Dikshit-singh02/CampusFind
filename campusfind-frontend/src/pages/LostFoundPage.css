@@ -202,6 +202,57 @@
   transform: translateY(-1px);
 }
 
+/* Enhanced Filter Dropdowns */
+.lf-filter-row {
+  margin-bottom: 2rem;
+}
+
+.lf-filter-row .lf-form-control {
+  min-height: 52px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 2px solid rgba(255, 255, 255, 0.25) !important;
+  color: white !important;
+  padding: 1rem 1.5rem !important;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lf-filter-row .lf-form-control:hover {
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+  transform: translateY(-1px);
+}
+
+.lf-filter-row .lf-form-control:focus {
+  border-color: rgba(139, 92, 246, 0.8) !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.3), 0 12px 40px rgba(0,0,0,0.4) !important;
+  transform: translateY(-3px) scale(1.03);
+  outline: none;
+}
+
+/* Custom dropdown arrow */
+.lf-filter-row select::-webkit-details-marker,
+.lf-filter-row select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2em;
+  padding-right: 3rem;
+}
+
+.lf-filter-row option {
+  background: #1a1a2e;
+  color: white;
+  padding: 1rem;
+  font-weight: 500;
+}
+
+
 .lf-form-group {
   margin-bottom: 1.5rem;
 }
@@ -313,6 +364,26 @@
 .lf-badge-success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
 .lf-badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
 .lf-badge-info { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+
+/* Claim Button */
+.lf-claim-btn {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border: none;
+  color: white;
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  font-size: 0.875rem;
+}
+
+.lf-claim-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
+}
+
 
 
 

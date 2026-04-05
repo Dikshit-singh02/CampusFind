@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getLostItems, createLostItem, getFoundItems, createFoundItem, updateItemStatus } from '../services/api';
+import { getLostItems, createLostItem, getFoundItems, createFoundItem, updateFoundItem } from '../services/api';
 import './LostFoundPage.css';
 
 const LostFoundPage = () => {
@@ -115,19 +115,25 @@ const LostFoundPage = () => {
     }
   };
 
+  const getItemStatus = (item, type) => {
+    return type === 'found' ? (item.claimStatus || item.status || 'Available') : (item.status || 'Available');
+  };
+
+
 
 
   const claimItem = async (item) => {
     // eslint-disable-next-line no-alert
     if (!window.confirm('Claim this item?')) return;
     try {
-      await updateItemStatus(item._id, { status: 'Claimed' });
+      await updateFoundItem(item._id, { claimStatus: 'Claimed' });
       setSuccessMessage('Claimed!');
       fetchItems();
     } catch (err) {
       setError('Claim failed');
     }
   };
+
 
 
   const openImageModal = (image) => {
@@ -140,22 +146,29 @@ const LostFoundPage = () => {
     setSelectedImage(null);
   };
 
-  const filteredLostItems = lostItems.filter(item => 
-    (!searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase())) &&
-    (filterStatus === 'All' || item.status === filterStatus)
-  );
+  const filteredLostItems = lostItems
+    .filter(item => 
+      (!searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (filterStatus === 'All' || item.status === filterStatus) &&
+      (filterType === 'All' || filterType === 'Lost')
+    )
+    .sort((a, b) => sortBy === 'newest' ? new Date(b.createdAt) - new Date(a.createdAt) : new Date(a.createdAt) - new Date(b.createdAt));
 
-  const filteredFoundItems = foundItems.filter(item => 
-    (!searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase())) &&
-    (filterStatus === 'All' || item.status === filterStatus)
-  );
+  const filteredFoundItems = foundItems
+    .filter(item => 
+      (!searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (filterStatus === 'All' || item.claimStatus === filterStatus) &&
+      (filterType === 'All' || filterType === 'Found')
+    )
+    .sort((a, b) => sortBy === 'newest' ? new Date(b.createdAt) - new Date(a.createdAt) : new Date(a.createdAt) - new Date(b.createdAt));
+
 
   const renderItem = (item, type) => (
     <div className="lf-list-group-item" key={item._id}>
       <div>
         <h6>{item.title}</h6>
-        <span className={`badge ${getStatusBadgeColor(item.status)}`}>
-          {item.status || 'Available'}
+        <span className={`badge ${getStatusBadgeColor(getItemStatus(item, type))}`}>
+          {getItemStatus(item, type)}
         </span>
         <p>{item.description}</p>
         <small>{item.location} | {item.contactInfo}</small>
@@ -172,10 +185,11 @@ const LostFoundPage = () => {
       <div>
 
         {type === 'found' && item.status === 'Available' && (
-          <button className="btn btn-primary btn-sm" onClick={() => claimItem(item)}>
+          <button className="lf-claim-btn" onClick={() => claimItem(item)}>
             Claim
           </button>
         )}
+
       </div>
     </div>
   );
@@ -342,12 +356,12 @@ const LostFoundPage = () => {
 
         {activeTab === 'browse' && (
           <div>
-            <div className="row mb-4">
+            <div className="row mb-4 lf-filter-row">
               <div className="col-md-3">
                 <input
                   type="text"
                   className="lf-form-control"
-                  placeholder="🔍 Search items"
+                  placeholder="🔍 Search items..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -357,6 +371,7 @@ const LostFoundPage = () => {
                   <option>All Status</option>
                   <option>Available</option>
                   <option>Claimed</option>
+                  <option>Returned</option>
                 </select>
               </div>
               <div className="col-md-2">
@@ -375,26 +390,34 @@ const LostFoundPage = () => {
             </div>
 
             <div className="row">
-              <div className="col-md-6 mb-4">
-                <div className="lf-card-glass h-100">
-                  <div className="lf-card-header-list-lost">
-                    Lost Items ({filteredLostItems.length})
-                  </div>
-                  <div className="card-body lf-scrollable">
-                    {filteredLostItems.map(item => renderItem(item, 'lost'))}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 mb-4">
-                <div className="lf-card-glass h-100">
-                  <div className="lf-card-header-list-found">
-                    Found Items ({filteredFoundItems.length})
-                  </div>
-                  <div className="card-body lf-scrollable">
-                    {filteredFoundItems.map(item => renderItem(item, 'found'))}
+              { (filterType === 'All' || filterType === 'Lost') && (
+                <div className="col-md-6 mb-4">
+                  <div className="lf-card-glass h-100">
+                    <div className="lf-card-header-list-lost">
+                      Lost Items ({filteredLostItems.length})
+                    </div>
+                    <div className="card-body lf-scrollable">
+                      {filteredLostItems.length > 0 ? filteredLostItems.map(item => renderItem(item, 'lost')) : (
+                        <p className="text-muted text-center py-4">No lost items match filters</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
+              { (filterType === 'All' || filterType === 'Found') && (
+                <div className="col-md-6 mb-4">
+                  <div className="lf-card-glass h-100">
+                    <div className="lf-card-header-list-found">
+                      Found Items ({filteredFoundItems.length})
+                    </div>
+                    <div className="card-body lf-scrollable">
+                      {filteredFoundItems.length > 0 ? filteredFoundItems.map(item => renderItem(item, 'found')) : (
+                        <p className="text-muted text-center py-4">No found items match filters</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
