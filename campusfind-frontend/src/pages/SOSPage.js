@@ -65,7 +65,6 @@ const SOSPage = () => {
   return (
     <>
       <div className="sos-container">
-        <div className="container">
           <div className="row justify-content-center">
             <div className="col-12 col-md-8 col-lg-6 text-center">
               <h1 className="display-4 mb-4 text-white fw-bold">Emergency SOS</h1>
@@ -80,7 +79,6 @@ const SOSPage = () => {
             </div>
           </div>
         </div>
-      </div>
 
       {showPanel && (
         <div className="sos-panel">

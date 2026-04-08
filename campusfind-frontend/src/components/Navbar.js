@@ -84,20 +84,12 @@ const Navbar = () => {
                 <Link className="nav-link nav-link-enhanced" to="/admin">Admin</Link>
               </li>
             )}
-            {user ? (
-              <>
-                <li className="nav-item position-relative">
-                  <button className="btn nav-link nav-link-enhanced position-relative p-2" style={{borderRadius: '50%'}}>
-                    <i className="fas fa-bell fs-5"></i>
-                    <span className="notification-badge">3</span>
-                  </button>
-                </li>
-                <li className="nav-item">
-                  <button className="btn logout-btn-enhanced ms-2" onClick={handleLogout}>
-                    Logout ({user.name})
-                  </button>
-                </li>
-              </>
+{user ? (
+              <li className="nav-item">
+                <button className="btn logout-btn-enhanced" onClick={handleLogout}>
+                  Logout ({user.name})
+                </button>
+              </li>
             ) : null}
           </ul>
         </div>

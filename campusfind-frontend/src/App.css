@@ -28,6 +28,16 @@
   position: relative;
 }
 
+.ms-sidebar {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.ms-sidebar > * {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .app-container::before {
   content: '';
   position: absolute;
