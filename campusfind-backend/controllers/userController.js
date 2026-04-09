@@ -29,41 +29,6 @@ const getUserById = async (req, res) => {
   }
 };
 
-// @desc    Update user role
-// @route   PUT /api/users/:id/role
-// @access  Private/Admin
-const updateUserRole = async (req, res) => {
-  try {
-    const { role } = req.body;
-    
-    // Validate role
-    if (!['student', 'faculty', 'admin'].includes(role)) {
-      return res.status(400).json({ message: 'Invalid role' });
-    }
-    
-    const user = await User.findById(req.params.id);
-    
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    
-    user.role = role;
-    await user.save();
-    
-    res.json({
-      message: 'User role updated',
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error: ' + error.message });
-  }
-};
-
 // @desc    Delete user
 // @route   DELETE /api/users/:id
 // @access  Private/Admin

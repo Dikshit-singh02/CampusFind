@@ -18,7 +18,6 @@ router.use(admin);
 router.get('/stats', getUserStats);
 router.get('/', getAllUsers);
 router.get('/:id', getUserById);
-router.put('/:id/role', updateUserRole);
 router.delete('/:id', deleteUser);
 
 module.exports = router;

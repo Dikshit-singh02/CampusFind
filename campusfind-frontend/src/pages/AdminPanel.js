@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  getAllUsers, getUserStats, updateUserRole, deleteUser,
+  getAllUsers, getUserStats, deleteUser,
   getLostItems, getFoundItems, getLostItemById, getFoundItemById,
   updateLostItem, deleteLostItem, updateFoundItem, deleteFoundItem 
 } from '../services/api';
@@ -21,9 +21,7 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [selectedUser, setSelectedUser] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [showUserModal, setShowUserModal] = useState(false);
   const [showItemModal, setShowItemModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
 
@@ -64,25 +62,6 @@ const AdminPanel = () => {
       setError(err.response?.data?.message || 'Failed to delete user');
       setTimeout(() => setError(''), 3000);
     }
-  };
-
-  const handleUpdateRole = async (userId, newRole) => {
-    try {
-      await updateUserRole(userId, newRole);
-      setSuccess('User role updated successfully');
-      setShowUserModal(false);
-      setSelectedUser(null);
-      fetchData();
-      setTimeout(() => setSuccess(''), 3000);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update role');
-      setTimeout(() => setError(''), 3000);
-    }
-  };
-
-  const openUserModal = (user) => {
-    setSelectedUser(user);
-    setShowUserModal(true);
   };
 
   // Item Actions
@@ -322,12 +301,6 @@ const AdminPanel = () => {
                               <td>
                                 <div className="actions-group">
                                   <button
-                                    className="btn-action btn-edit"
-                                    onClick={() => openUserModal(user)}
-                                  >
-                                    Edit Role
-                                  </button>
-                                  <button
                                     className="btn-action btn-delete"
                                     onClick={() => handleDeleteUser(user._id)}
                                   >
@@ -501,54 +474,6 @@ const AdminPanel = () => {
               </div>
             )}
           </div>
-
-          {/* User Role Modal */}
-          {showUserModal && selectedUser && (
-            <>
-              <div className="modal-backdrop fade show" onClick={() => setShowUserModal(false)}></div>
-              <div className="modal fade show d-block" tabIndex="-1">
-                <div className="modal-dialog">
-                  <div className="modal-content">
-                    <div className="modal-header border-0">
-                      <h5 className="modal-title">
-                        <i className="fas fa-user-cog me-2"></i>Change Role for {selectedUser.name}
-                      </h5>
-                      <button className="btn-close" onClick={() => setShowUserModal(false)}></button>
-                    </div>
-                    <div className="modal-body">
-                      <p>Current role: <strong className="badge bg-secondary">{selectedUser.role}</strong></p>
-                      <div className="row g-2">
-                        <div className="col">
-                          <button
-                            className={`btn w-100 ${selectedUser.role === 'student' ? 'btn-primary' : 'btn-outline-primary'}`}
-                            onClick={() => handleUpdateRole(selectedUser._id, 'student')}
-                          >
-                            👨‍🎓 Student
-                          </button>
-                        </div>
-                        <div className="col">
-                          <button
-                            className={`btn w-100 ${selectedUser.role === 'faculty' ? 'btn-warning' : 'btn-outline-warning'}`}
-                            onClick={() => handleUpdateRole(selectedUser._id, 'faculty')}
-                          >
-                            👨‍🏫 Faculty
-                          </button>
-                        </div>
-                        <div className="col">
-                          <button
-                            className={`btn w-100 ${selectedUser.role === 'admin' ? 'btn-danger' : 'btn-outline-danger'}`}
-                            onClick={() => handleUpdateRole(selectedUser._id, 'admin')}
-                          >
-                            ⚙️ Admin
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
 
           {/* Item Edit Modal */}
           {showItemModal && selectedItem && (

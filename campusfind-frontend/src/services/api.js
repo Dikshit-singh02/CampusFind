@@ -39,10 +39,6 @@ export const getUserStats = async () => {
   return api.get('/users/stats');
 };
 
-export const updateUserRole = async (userId, role) => {
-  return api.put(`/users/${userId}/role`, { role });
-};
-
 export const deleteUser = async (userId) => {
   return api.delete(`/users/${userId}`);
 };

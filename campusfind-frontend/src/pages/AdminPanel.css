@@ -4,8 +4,12 @@
 .actions-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.25rem;
   align-items: center;
+}
+
+.btn-action {
+  min-width: 80px;
 }
 
 .btn-action {
